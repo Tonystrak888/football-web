@@ -1,0 +1,17 @@
+[Unit]
+Description=Football Hub backend
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=footballhub
+WorkingDirectory=/opt/football-hub
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=5
+# ปรับ path ของ node ด้วย `which node` ถ้าไม่ใช่ /usr/bin/node
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

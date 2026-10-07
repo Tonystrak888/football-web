@@ -1,0 +1,6 @@
+# แก้ example.com เป็นโดเมนของคุณ (DNS A record ต้องชี้มาที่ IP ของเซิร์ฟเวอร์ก่อน)
+# ติดตั้ง Caddy: https://caddyserver.com/docs/install  แล้ววางไฟล์นี้ที่ /etc/caddy/Caddyfile
+example.com {
+	encode gzip
+	reverse_proxy localhost:3000
+}

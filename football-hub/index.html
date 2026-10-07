@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Kanit:wght@600;800&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
+<title>Football Hub — ศูนย์รวมฟุตบอลทั่วโลก</title>
+<style>
+:root{--bg:#07090d;--bg2:#153524;--panel:#10141b;--panel2:#151a23;--line:#252c38;--text:#f5f7fa;--muted:#8e98a8;--accent:#39e58c;--on:#04110a;--red:#ff5a4f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f1f5f2;--bg2:#cfeedd;--panel:#fff;--panel2:#f7faf8;--line:#d5ddd8;--text:#101a14;--muted:#5d6b63;--accent:#13a35a;--on:#fff;--red:#d83a2e}}
+:root[data-theme="light"]{--bg:#f1f5f2;--bg2:#cfeedd;--panel:#fff;--panel2:#f7faf8;--line:#d5ddd8;--text:#101a14;--muted:#5d6b63;--accent:#13a35a;--on:#fff;--red:#d83a2e}
+html{scroll-padding-top:calc(72px + env(safe-area-inset-top,0px))}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg) radial-gradient(circle at 70% -10%,var(--bg2) 0,transparent 38%) no-repeat;color:var(--text);font-family:"Noto Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.topbar{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 5%;gap:24px;position:sticky;top:env(safe-area-inset-top,0px);background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(14px);z-index:10}
+.brand{font-weight:900;letter-spacing:-.7px;font-size:20px;display:flex;gap:9px;align-items:center;white-space:nowrap}
+.accent{color:var(--accent)}
+nav{display:flex;gap:5px;flex:1}
+.nav{background:none;border:0;color:var(--muted);padding:10px 14px;border-radius:9px;cursor:pointer}
+.nav:hover,.nav.active{background:var(--panel2);color:var(--text)}
+.search input{width:220px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline-offset:2px}
+.page{display:none;max-width:1200px;margin:auto;padding:40px 5% 70px}
+.page.active{display:block}
+.hero{min-height:340px;display:flex;align-items:center;justify-content:space-between;gap:30px}
+.eyebrow{font-size:12px;letter-spacing:2px;color:var(--accent);font-weight:800;margin:0 0 10px}
+.hero h1{font-size:clamp(40px,7vw,78px);line-height:1;margin:0}
+.hero h1 span{color:var(--accent)}
+.sub,.page-title p:not(.eyebrow){color:var(--muted);max-width:620px;line-height:1.7}
+.primary{margin-top:10px;background:var(--accent);color:var(--on);border:0;padding:13px 20px;border-radius:10px;font-weight:900;cursor:pointer}
+.hero-card{width:280px;min-height:210px;border:1px solid var(--accent);background:var(--panel);border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:16px}
+.hero-card strong{font-size:56px;line-height:1}
+.hero-card small{color:var(--muted)}
+.pulse{width:10px;height:10px;background:var(--accent);border-radius:50%;box-shadow:0 0 18px var(--accent);animation:p 1.4s infinite}
+@keyframes p{50%{opacity:.3}}
+@media(prefers-reduced-motion:reduce){.pulse{animation:none}}
+.section-head{display:flex;justify-content:space-between;align-items:end;margin:32px 0 15px}
+.section-head h2{margin:0;font-size:23px}
+.section-head p{margin:5px 0 0;color:var(--muted);font-size:13px}
+.ghost,.back,.filter,.tab{background:none;color:var(--muted);border:1px solid var(--line);border-radius:9px;padding:9px 13px;cursor:pointer}
+.filter.active,.tab.active{background:var(--accent);color:var(--on);border-color:var(--accent);font-weight:800}
+.cards,.league-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.match-card,.league-card,.fixture,.empty{background:var(--panel);border:1px solid var(--line);border-radius:14px}
+.match-card{padding:16px;cursor:pointer}
+.match-card:hover,.league-card:hover{border-color:var(--accent)}
+.league{color:var(--muted);font-size:12px}
+.teams{display:flex;justify-content:space-between;align-items:center;text-align:center;margin:14px 0 6px;gap:6px}
+.team{width:38%;font-weight:700}
+.score{font-size:24px;font-weight:900}
+.live{color:var(--red);font-size:12px;font-weight:800}
+.st{color:var(--muted);font-size:12px}
+.when{text-align:center;color:var(--muted);font-size:12px}
+.fixture-list{display:flex;flex-direction:column;gap:9px}
+.fixture{padding:13px 18px;display:grid;grid-template-columns:170px 1fr 120px;align-items:center;gap:15px;cursor:pointer}
+.fixture:hover{border-color:var(--accent)}
+.fixture .date{color:var(--muted);font-size:13px}
+.fixture .teams2{display:flex;justify-content:center;gap:16px;font-weight:700;text-align:center}
+.page-title{margin-bottom:24px}
+.page-title h1{font-size:40px;margin:0}
+.filters,.tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.group-h{margin:26px 0 10px;font-size:18px;color:var(--muted)}
+.league-card{padding:20px;cursor:pointer}
+.league-card h3{margin:9px 0}
+.league-card p{color:var(--muted);margin:0;font-size:13px}
+.flag{font-size:28px}
+.back{margin-bottom:20px}
+.league-header,.match-header{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px;margin-bottom:16px}
+.league-header h1{margin:0 0 6px}
+.match-header{text-align:center}
+.bigscore{font-size:54px;font-weight:900;margin:10px}
+.pb{display:flex;height:12px;border-radius:6px;overflow:hidden;margin:8px auto;max-width:520px}
+.pb i{display:block}
+.pl{display:flex;justify-content:space-between;max-width:520px;margin:0 auto;color:var(--muted);font-size:13px}
+.empty{padding:30px;text-align:center;color:var(--muted);border-style:dashed}
+footer{border-top:1px solid var(--line);padding:25px 5%;display:flex;gap:30px;color:var(--muted);font-size:12px;justify-content:space-between}
+@media(max-width:800px){.topbar{gap:10px}.topbar nav{display:none}.mnav{display:flex}.search input{width:130px}.hero{min-height:0;flex-direction:column;align-items:flex-start;padding-top:20px}.hero-card{width:100%}.cards,.league-grid{grid-template-columns:1fr}.fixture{grid-template-columns:1fr;text-align:center}footer{flex-direction:column}}
+.mnav{display:none;gap:6px;padding:10px 5% 0;overflow-x:auto}
+.fl{color:var(--muted);font-size:12px;align-self:center;min-width:64px}
+.filters .filter{padding:6px 11px;font-size:13px}
+#cs,#lq{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:9px 12px;max-width:100%}
+#lq{width:min(320px,100%)}
+#lcnt{color:var(--muted);font-size:13px;margin:6px 0 14px}
+h1,h2,h3,.brand,.score,.bigscore,.hero-card strong{font-family:Kanit,"Noto Sans Thai",system-ui,sans-serif}
+.hero .eyebrow,.page-title .eyebrow{display:none}
+.match-card,.fixture,.league-card{transition:border-color .15s}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.tbl{width:100%;border-collapse:collapse;min-width:420px}
+.tbl th,.tbl td{padding:10px 12px;text-align:center;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.tbl tr:last-child td{border-bottom:0}
+.tbl th{color:var(--muted);font-weight:600;font-size:12px}
+.tbl .tn,.tbl th:nth-child(2){text-align:left;width:100%;font-weight:600}
+.tbl td:first-child{color:var(--muted)}
+.tbl td:last-child{color:var(--accent);font-size:16px}
+@media(max-width:800px){.mnav{display:flex}}
+.mh{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+.mh .tm{display:flex;flex-direction:column;align-items:center;gap:8px;font-weight:700}
+.crest{width:56px;height:56px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;font-family:Kanit,sans-serif;font-weight:800}
+.chips{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:12px;color:var(--muted)}
+.chip.live{color:var(--red);border-color:var(--red)}
+.ig{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.ig div{background:var(--panel);padding:10px 14px;font-size:13px}
+.ig small{display:block;color:var(--muted);font-size:11px}
+.na{color:var(--muted);font-style:italic}
+.tl{display:flex;flex-direction:column}
+.ev{display:grid;grid-template-columns:1fr 64px 1fr;gap:8px;padding:8px 0}
+.ev .mn{text-align:center;font-weight:800;font-family:Kanit,sans-serif;background:var(--panel2);border-radius:8px;padding:3px 0;font-size:13px;align-self:start}
+.eh{text-align:right}.ea{text-align:left}
+.ev small{display:block;color:var(--muted)}
+.ev .sc{font-weight:800;color:var(--accent);margin-left:6px}
+.sys{text-align:center;color:var(--muted);font-size:12px;padding:10px;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:6px 0}
+.note{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--muted);margin-bottom:12px}
+.lu{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.lu h3{margin:0 0 8px}
+.lu ul{list-style:none;margin:0;padding:0}
+.lu li{padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
+.pos{display:inline-block;width:22px;color:var(--accent);font-weight:800;font-size:12px}
+.sr{padding:9px 0}
+.sr .v{display:flex;justify-content:space-between;font-weight:700}
+.sr .l{text-align:center;color:var(--muted);font-size:12px;margin:2px 0 5px}
+.sb{display:flex;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.sb i{background:var(--accent)}
+@media(max-width:600px){.ig,.lu{grid-template-columns:1fr}.ev{grid-template-columns:1fr 52px 1fr;font-size:13px}.crest{width:44px;height:44px}}
+.art{max-width:680px;margin:auto;line-height:1.85}
+.art h2{font-size:26px;line-height:1.3;margin:0 0 16px}
+.art p{margin:0 0 14px}
+</style>
+<style>/* ===== skin.css — ธีมไลฟ์สกอร์โทนฟ้า (แนว AiScore) แก้สีที่ตัวแปรบนสุด ===== */
+:root:not([data-theme="dark"]){--bg:#f2f4f7;--panel:#fff;--panel2:#f1f3f6;--line:#e5e8ee;--text:#1d2330;--muted:#7a8394;--accent:#1f7ad6;--on:#fff;--red:#e0372c;--hd:#2381d9}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e141c;--panel:#171f2b;--panel2:#1e2837;--line:#263243;--text:#e8edf5;--muted:#8b97aa;--accent:#4da3ff;--on:#04111f;--red:#ff6454;--hd:#173f6e}}
+:root[data-theme="dark"]{--bg:#0e141c;--panel:#171f2b;--panel2:#1e2837;--line:#263243;--text:#e8edf5;--muted:#8b97aa;--accent:#4da3ff;--on:#04111f;--red:#ff6454;--hd:#173f6e}
+body{background:var(--bg)}
+.topbar{height:60px;padding:0 max(20px,calc((100% - 1240px)/2 + 20px));background:var(--hd);border:0;backdrop-filter:none;gap:18px}
+.brand{color:#fff;font-size:20px}.brand .accent{color:#ffd54a}
+.topbar .nav{color:rgba(255,255,255,.88);border-radius:8px;padding:9px 16px;font-weight:600}
+.topbar .nav:hover{background:rgba(255,255,255,.14);color:#fff}
+.topbar .nav.active{background:#fff;color:var(--hd)}
+.search input{width:260px;border:0;border-radius:6px;background:var(--panel);padding:10px 14px}
+.shell{max-width:1240px;margin:auto;display:grid;grid-template-columns:230px 1fr;gap:22px;padding:0 20px}
+#side{position:sticky;top:76px;align-self:start;max-height:calc(100vh - 92px);overflow:auto;padding:20px 0}
+#side h4{margin:18px 0 6px;font-size:14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+#side h4:first-child{margin-top:0}
+.si{display:flex;gap:10px;align-items:center;padding:8px 6px;border-radius:6px;font-size:14px;cursor:pointer}
+.si:hover{background:var(--panel);color:var(--accent)}
+.fl2{width:22px;text-align:center}
+#sq{width:100%;margin:4px 0 8px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+.page{max-width:none;margin:0;padding:20px 0 60px}
+.page.active{animation:up .3s ease both}@keyframes up{from{opacity:0}}
+.page-title{margin-bottom:12px}.page-title h1{font-size:22px}.page-title p:not(.eyebrow){margin:4px 0 0;font-size:13px;max-width:none}
+.filters,.tabs{gap:8px;margin-bottom:14px}
+.ghost,.back,.filter,.tab{border:0;background:var(--panel);color:var(--text);border-radius:6px;padding:10px 20px;font-weight:600}
+.ghost:hover,.back:hover,.filter:hover,.tab:hover{color:var(--accent)}
+.filter.active,.tab.active{background:var(--accent);color:var(--on)}
+.filters .filter{padding:9px 16px;font-size:13px}
+.group-h{margin:0;padding:10px 14px;background:var(--panel2);border:1px solid var(--line);border-bottom:0;border-radius:8px 8px 0 0;font:600 13px "Noto Sans Thai",sans-serif;color:var(--text)}
+.group-h+.fixture-list,#leagueMatches,#searchRes,#upcoming{gap:0;background:var(--panel);border:1px solid var(--line);border-radius:0 0 8px 8px;margin-bottom:14px;overflow:hidden}
+#leagueMatches,#searchRes,#upcoming{border-radius:8px}
+.fixture,.fixture:hover{border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;padding:0 14px;min-height:48px;transform:none;box-shadow:none}
+.fixture:hover{background:var(--panel2)}
+.fixture.lv{grid-template-columns:26px 54px 28px 1fr 74px 1fr 120px;gap:8px;font-size:14px}
+.fixture .star{color:var(--muted)}
+.fixture .tm{color:var(--muted);font-size:13px;line-height:1.2}.fixture .tm small{display:block;font-size:11px}
+.fixture .stt{color:var(--red);font-size:12px;text-align:center}
+.fixture .th{text-align:right;font-weight:600}.fixture .ta{text-align:left;font-weight:600}
+.fixture .sc2{text-align:center;font:700 15px Kanit,sans-serif;color:var(--muted)}.fixture .sc2.fin{color:var(--red)}
+.fixture .p3{display:flex;justify-content:flex-end;gap:12px;color:var(--muted);font-size:13px}.fixture .p3 i{font-style:normal;width:26px;text-align:center}.fixture .p3 .hi{color:var(--text);font-weight:700}
+.fixture .teams2 span:nth-child(2){color:var(--muted);font-weight:600}
+.match-card,.league-card,.empty,.league-header,.match-header,.tw,.ig,.note{background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:none}
+.match-card:hover,.league-card:hover{border-color:var(--accent);transform:none;box-shadow:none}
+.league{color:var(--accent);font-weight:600}
+.score,.bigscore{background:none;border:0;padding:0;letter-spacing:0;color:var(--red)}
+.hero{min-height:0;padding:26px 32px;border-radius:10px;border:0;background:linear-gradient(100deg,#1b6fd0,#3a96ee);color:#fff}
+.hero::before,.hero::after{display:none}
+.hero h1{font-size:clamp(30px,5vw,48px)}.hero h1 span,.hero .sub,.hero-card strong,.hero-card b,.hero-card small{color:#fff;background:none;-webkit-text-fill-color:currentColor}
+.hero .sub{opacity:.9}.hero h1 span{color:#ffd54a;-webkit-text-fill-color:#ffd54a}
+.hero-card{background:rgba(255,255,255,.14);border:0;box-shadow:none;width:240px;min-height:170px}.hero-card strong{font-size:56px;text-shadow:none}
+.primary{background:#fff;color:#1b6fd0;border-radius:6px;box-shadow:none}.primary:hover{transform:none;box-shadow:none}
+.section-head h2{border:0;padding:0;font-size:18px}
+.tbl th{background:var(--panel2);text-transform:none;letter-spacing:0}
+.tbl tbody tr:nth-child(even){background:transparent}.tbl tbody tr:hover{background:var(--panel2)}
+.tbl tbody tr:first-child td:first-child{color:var(--accent)}
+.sb i{background:var(--accent)}.note{border-left:3px solid var(--accent)}
+.flag{width:auto;height:auto;background:none;border:0}
+.crest{color:var(--accent);background:var(--panel2);width:60px;height:60px}
+footer{background:var(--panel);margin-top:20px}
+@media(max-width:800px){
+ .topbar{padding:0 14px;height:54px}.search input{width:120px}
+ .shell{display:block;padding:0 12px}#side{display:none}
+ .mnav{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));background:var(--panel);border-top:1px solid var(--line);overflow:visible}
+ .mnav .nav{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;padding:6px 4px;color:var(--muted)}
+ .mnav .nav i{font-style:normal;font-size:19px;line-height:1}.mnav .nav.active{background:none;color:var(--accent)}
+ body{padding-bottom:76px}
+ .fixture.lv{grid-template-columns:48px 1fr 60px 1fr;gap:6px;font-size:13px;padding:0 10px}
+ .fixture.lv .star,.fixture.lv .stt,.fixture.lv .p3{display:none}
+ .hero{flex-direction:column;align-items:flex-start;padding:22px 18px}.hero-card{width:100%}
+}
+/* ทีมโปรด */
+.fixture .star{cursor:pointer;font-size:17px;line-height:1}.fixture .star:hover,.fixture .star.on{color:#f5a524}
+.fixture.fav,.fixture.fav:hover{box-shadow:inset 3px 0 0 #f5a524}
+#favpop{position:absolute;z-index:30;display:none;min-width:200px;padding:6px;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 10px 30px -10px rgba(0,0,0,.4)}
+#favpop button{display:block;width:100%;text-align:left;background:none;border:0;padding:9px 10px;border-radius:6px;cursor:pointer}#favpop button:hover{background:var(--panel2)}
+.fav-item{display:flex;align-items:center}.fav-item .si{flex:1}.fav-item .x{cursor:pointer;color:var(--muted);padding:4px 8px}.fav-item .x:hover{color:var(--red)}
+#favBox .empty{margin-bottom:14px;padding:14px;font-size:13px}#favBox .fixture-list{margin-bottom:14px}
+@media(max-width:800px){.fixture.lv{grid-template-columns:22px 44px 1fr 56px 1fr}.fixture.lv .star{display:block}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">⚽ <span>FOOTBALL<span class="accent">HUB</span></span></div>
+  <nav><button class="nav active" data-page="today">ไลฟ์สกอร์</button><button class="nav" data-page="leagues">ลีกทั้งหมด</button><button class="nav" data-page="insights">วิเคราะห์</button><button class="nav" data-page="home">ภาพรวม</button></nav>
+  <div class="search"><input id="search" type="search" placeholder="ค้นหาทีม / ลีก" aria-label="ค้นหาทีมหรือลีก"></div>
+</header>
+<div class="mnav"><button class="nav active" data-page="today"><i>⚽</i>ไลฟ์สกอร์</button><button class="nav" data-page="leagues"><i>🏆</i>ลีกทั้งหมด</button><button class="nav" data-page="insights"><i>📊</i>วิเคราะห์</button><button class="nav" data-page="home"><i>🏠</i>ภาพรวม</button></div>
+
+<div class="shell"><aside id="side"></aside><main>
+  <section id="home" class="page">
+    <div class="hero">
+      <div><p class="eyebrow">WORLD FOOTBALL CENTER</p><h1>ฟุตบอลทั่วโลก<br><span>ในที่เดียว</span></h1>
+      <p class="sub">โปรแกรมวันนี้จากทั่วโลก ผลล่าสุด และคาดการณ์ผลของลีกใหญ่ <span id="asOf">ข้อมูลจริง ณ 7 ต.ค. 2026</span></p>
+      <button class="primary" data-go="today">ดูโปรแกรมวันนี้ →</button></div>
+      <div class="hero-card"><div class="pulse"></div><b id="heroLbl">น่าจะกำลังเตะอยู่</b><strong id="liveCount">–</strong><small id="heroSub"></small></div>
+    </div>
+    <div class="section-head"><div><h2 id="liveH2">กำลังเตะตอนนี้ (ประมาณจากเวลา)</h2><p id="liveP">ยังไม่มีสกอร์สดจากแหล่งข้อมูลนี้</p></div><button class="ghost" data-go="today">ดูทั้งหมด →</button></div>
+    <div id="livePreview" class="cards"></div>
+    <div class="section-head"><div><h2>นัดถัดไปของลีกใหญ่</h2><p>พร้อมโอกาสชนะที่คาดการณ์</p></div></div>
+    <div id="upcoming" class="fixture-list"></div>
+    <div class="section-head"><div><h2>บทความวิเคราะห์</h2><p>สร้างจากตารางคะแนน ผลล่าสุด และความน่าจะเป็นของแบบจำลอง</p></div></div>
+    <div id="arts" class="cards"></div>
+  </section>
+
+  <section id="today" class="page active">
+    <div class="page-title"><p class="eyebrow">TODAY</p><h1>โปรแกรมวันนี้</h1><p id="todayDate">วันพุธที่ 7 ต.ค. 2026 (เวลาไทย) รวมคู่ที่เตะข้ามคืนถึงเช้า 8 ต.ค.</p></div>
+    <div class="filters" id="todayFilters"></div>
+    <div id="todayList"></div>
+  </section>
+
+  <section id="leagues" class="page">
+    <div class="page-title"><p class="eyebrow">WORLD LEAGUES</p><h1>ลีกทั้งหมด</h1><p>ลีกที่มีป้าย "มีข้อมูล" ดูผลและโปรแกรมได้แล้ว ลีกอื่นรอดึงข้อมูลเพิ่ม</p></div>
+    <div id="leagueGrid" class="league-grid"></div>
+  </section>
+
+  <section id="insights" class="page"><div class="page-title"><p class="eyebrow">INSIGHTS</p><h1>วิเคราะห์ข้อมูล</h1><p>Power Rankings คาดการณ์แชมป์/ท็อป/ตกชั้น และผู้นำสถิติ คำนวณจากข้อมูลใน data.js</p></div><div class="tabs" id="inTabs"></div><div class="filters" id="inFilters"></div><div id="inBody"></div></section>
+
+  <section id="leagueDetail" class="page">
+    <button class="back" data-go="leagues">← กลับไปลีกทั้งหมด</button>
+    <div id="leagueHeader" class="league-header"></div>
+    <div class="tabs" id="leagueTabs"></div>
+    <div id="leagueMatches" class="fixture-list"></div>
+  </section>
+
+  <section id="matchDetail" class="page">
+    <button class="back" id="backBtn">← กลับ</button>
+    <div id="matchHeader" class="match-header"></div>
+    <div id="matchBody"></div>
+  </section>
+
+  <section id="searchPage" class="page">
+    <div class="page-title"><p class="eyebrow">SEARCH</p><h1 id="sTitle">ผลการค้นหา</h1></div>
+    <div id="searchRes" class="fixture-list"></div>
+  </section>
+</main></div>
+
+<footer><b>FOOTBALL<span class="accent">HUB</span></b><span>ผล ตารางคะแนน และโอกาสชนะ: ผู้ให้บริการข้อมูลกีฬา · ไทยลีก/เจลีก: เว็บลีกและเว็บสถิติ · โปรแกรมวันนี้: goal7.co</span><span id="feedStat">หน้านี้ไม่รีเฟรชข้อมูลเอง</span></footer>
+
+<script>// ============ data.js — แก้ข้อมูลทั้งหมดที่ไฟล์นี้ไฟล์เดียว ============
+// L[]  : ลีก  {id,n,c,f, s:ตารางคะแนน "ทีม,ชนะ,เสมอ,แพ้,แต้ม;..." (เรียงตามอันดับ), r:ผลล่าสุด "เหย้า,เยือน,ประตูเหย้า,ประตูเยือน,MM-DDThh:mm" (UTC), u:นัดถัดไป "เหย้า,เยือน,MM-DDThh:mm,%เหย้าชนะ,%เสมอ,%เยือนชนะ"}
+// TODAY: โปรแกรมวันนี้ "ลีก|เหย้า|เยือน|เวลาไทย|0=วันนี้ 1=ข้ามคืน"
+// MD   : รายละเอียดแมตช์ คีย์ "เหย้า|เยือน" (เหตุการณ์ สถิติ ผู้เล่น)
+// SEASON: ตั้งค่าการจำลองฤดูกาล (จำนวนรอบ, ลีกที่ข้าม, จำนวนทีมท็อป/ตกชั้น)
+const SEASON={sims:3000,skip:["ucl"],cfg:{default:{top:4,rel:3},bundes:{top:4,rel:2}}};
+// ---------- ข้อมูล ----------
+const L=[
+{id:"epl",n:"พรีเมียร์ลีก อังกฤษ",c:"อังกฤษ",f:"🏴",s:"Man City,5,0,0,15;Arsenal,4,0,1,12;Brighton,3,1,1,10;Brentford,2,3,0,9;Leeds,2,3,0,9;Liverpool,2,3,0,9;Everton,2,3,0,9;Hull,2,2,1,8;Newcastle,2,2,1,8;Chelsea,2,1,2,7;Ipswich,2,0,3,6;Man United,1,2,2,5;Nottm Forest,1,2,2,5;Sunderland,1,1,3,4;Crystal Palace,1,1,3,4;Aston Villa,1,1,3,4;Bournemouth,0,3,2,3;Coventry,1,0,4,3;Fulham,0,2,3,2;Tottenham,0,2,3,2",
+r:["Brentford,Chelsea,3,0,09-18T19:00","Tottenham,Aston Villa,2,3,09-19T11:30","Brighton,Arsenal,3,0,09-19T14:00","Everton,Ipswich,1,0,09-19T14:00","Newcastle,Hull,2,1,09-19T14:00","Nottm Forest,Coventry,0,1,09-19T16:30","Bournemouth,Liverpool,0,1,09-20T13:00","Leeds,Crystal Palace,0,0,09-20T13:00","Man City,Sunderland,5,3,09-20T13:00","Fulham,Man United,1,1,09-20T15:30"],
+u:["Arsenal,Leeds,10-10T11:30,69.4,18.8,11.8","Aston Villa,Brentford,10-10T14:00,35.7,26.7,37.6","Chelsea,Bournemouth,10-10T14:00,57.1,22.2,20.7","Ipswich,Fulham,10-10T14:00,33.6,27,39.4","Sunderland,Brighton,10-10T14:00,32.7,27.1,40.2","Man United,Tottenham,10-10T16:30,56.2,22.4,21.4","Crystal Palace,Nottm Forest,10-11T13:00,36.3,28.8,34.9","Hull,Everton,10-11T13:00,26.3,28,45.7","Liverpool,Man City,10-11T15:30,37.2,25.6,37.2","Coventry,Newcastle,10-12T19:00,28.7,26,45.3"]},
+{id:"liga",n:"ลาลีกา สเปน",c:"สเปน",f:"🇪🇸",s:"Barcelona,7,0,0,21;Atletico Madrid,5,1,1,16;Real Betis,5,1,1,16;Real Madrid,5,0,2,15;Sevilla,4,1,2,13;Alaves,3,2,2,11;Deportivo,2,4,1,10;Real Sociedad,3,1,3,10;Villarreal,2,2,3,8;Athletic Bilbao,2,2,2,8;Getafe,2,2,3,8;Rayo Vallecano,2,2,3,8;Osasuna,2,2,3,8;Celta Vigo,1,4,2,7;Espanyol,2,1,4,7;Racing Santander,2,1,4,7;Levante,1,2,3,5;Elche,1,2,4,5;Valencia,1,1,5,4;Malaga,0,3,4,3",
+r:["Espanyol,Elche,1,3,09-18T19:00","Osasuna,Rayo Vallecano,1,1,09-19T12:00","Athletic Bilbao,Alaves,0,0,09-19T14:15","Celta Vigo,Racing Santander,5,0,09-19T16:30","Sevilla,Barcelona,1,3,09-19T19:00","Getafe,Malaga,1,0,09-20T12:00","Atletico Madrid,Real Madrid,2,1,09-20T14:15","Deportivo,Real Betis,1,1,09-20T16:30","Villarreal,Levante,3,1,09-20T16:30","Valencia,Real Sociedad,2,3,09-20T19:00"],
+u:["Malaga,Espanyol,10-09T19:00,34.5,29.8,35.7","Rayo Vallecano,Athletic Bilbao,10-10T12:00,34,28.2,37.8","Alaves,Atletico Madrid,10-10T14:15,22.3,25.5,52.2","Barcelona,Getafe,10-10T16:30,90.8,6.4,2.8","Real Madrid,Villarreal,10-10T19:00,71.7,15.4,12.9","Elche,Celta Vigo,10-11T12:00,34.3,29,36.7","Real Sociedad,Deportivo,10-11T14:15,57.4,23.8,18.8","Real Betis,Osasuna,10-11T16:30,61,22.2,16.8","Racing Santander,Valencia,10-11T19:00,41.8,26.5,31.7","Levante,Sevilla,10-12T19:00,35.7,28.8,35.5"]},
+{id:"seriea",n:"กัลโช่ เซเรีย อา",c:"อิตาลี",f:"🇮🇹",s:"Roma,4,1,0,13;Inter,4,1,0,13;Lazio,4,1,0,13;Cagliari,4,0,1,12;AC Milan,3,2,0,11;Frosinone,3,1,1,10;Juventus,3,1,1,10;Como,3,1,1,10;Napoli,2,1,2,7;Sassuolo,2,1,2,7;Atalanta,2,0,3,6;Lecce,2,0,3,6;Udinese,1,1,3,4;Torino,1,1,3,4;Parma,1,1,3,4;Monza,1,1,3,4;Fiorentina,1,1,3,4;Bologna,0,2,3,2;Genoa,0,1,4,1;Venezia,0,0,5,0",
+r:["Monza,Sassuolo,2,1,09-18T18:45","Bologna,Torino,1,1,09-19T13:00","Udinese,Cagliari,0,1,09-19T13:00","Roma,Inter,2,2,09-19T16:00","Venezia,Lazio,0,2,09-19T18:45","Fiorentina,Napoli,1,1,09-20T10:30","Frosinone,Como,2,0,09-20T13:00","Parma,Genoa,2,1,09-20T13:00","Juventus,Atalanta,2,0,09-20T16:00","AC Milan,Lecce,3,0,09-20T18:45"],
+u:["Genoa,Fiorentina,10-10T13:00,30.5,28.6,40.9","Inter,Parma,10-10T16:00,84.7,10.1,5.2","Napoli,Frosinone,10-10T18:45,67.5,18.2,14.3","Como,Roma,10-11T10:30,37.7,26.4,35.9","Lazio,Monza,10-11T13:00,61.1,22.8,16.1","Lecce,Bologna,10-11T13:00,22.8,27.9,49.3","Sassuolo,AC Milan,10-11T16:00,22,24.8,53.2","Cagliari,Juventus,10-11T18:45,15.1,23.3,61.6","Atalanta,Venezia,10-12T16:30,61.2,21.4,17.4","Torino,Udinese,10-12T18:45,40.2,29.2,30.6"]},
+{id:"bundes",n:"บุนเดสลีกา เยอรมนี",c:"เยอรมนี",f:"🇩🇪",s:"Dortmund,4,0,0,12;Bayern,3,1,0,10;Freiburg,3,1,0,10;Augsburg,2,1,1,7;Leverkusen,2,1,1,7;Mainz,2,1,1,7;Elversberg,2,1,1,7;Werder Bremen,2,1,1,7;RB Leipzig,2,0,2,6;Frankfurt,1,2,1,5;Schalke,1,2,1,5;Paderborn,1,1,2,4;Cologne,1,1,2,4;Hoffenheim,1,0,3,3;Stuttgart,1,0,3,3;Hamburg,1,0,3,3;Union Berlin,0,1,3,1;Gladbach,0,0,4,0",
+r:["Elversberg,Bayern,1,2,09-13T15:30","Bayern,Union Berlin,7,0,09-18T18:30","Frankfurt,Freiburg,2,2,09-19T13:30","Gladbach,Mainz,3,4,09-19T13:30","Hamburg,Cologne,2,1,09-19T13:30","Werder Bremen,Augsburg,3,2,09-19T13:30","Stuttgart,Dortmund,0,1,09-19T16:30","Leverkusen,RB Leipzig,2,0,09-20T13:30","Schalke,Elversberg,0,0,09-20T15:30","Paderborn,Hoffenheim,3,1,09-20T17:30"],
+u:["Dortmund,Werder Bremen,10-09T18:30,70.7,16.5,12.8","Hoffenheim,Hamburg,10-10T13:30,67.7,17.6,14.7","Augsburg,Bayern,10-10T13:30,8.1,10.4,81.5","Mainz,Leverkusen,10-10T13:30,32.3,24.6,43.1","Union Berlin,Elversberg,10-10T13:30,41.3,25.1,33.6","Paderborn,Stuttgart,10-10T13:30,19.1,20.2,60.7","RB Leipzig,Frankfurt,10-10T16:30,62,19.2,18.8","Cologne,Gladbach,10-11T13:30,46.9,24.2,28.9","Freiburg,Schalke,10-11T15:30,57.9,22.7,19.4","Frankfurt,Cologne,10-16T18:30,49.5,22.9,27.6"]},
+{id:"ligue1",n:"ลีกเอิง ฝรั่งเศส",c:"ฝรั่งเศส",f:"🇫🇷",s:"Monaco,4,1,0,13;Lyon,3,2,0,11;Paris FC,3,2,0,11;Lille,3,1,1,10;Rennes,3,1,1,10;PSG,2,2,1,8;Angers,2,1,2,7;Strasbourg,2,1,2,7;Le Mans,1,3,1,6;Auxerre,2,0,3,6;Brest,1,2,2,5;Lorient,1,2,2,5;Toulouse,1,2,2,5;Nice,1,2,2,5;Lens,1,1,3,4;Troyes,1,1,3,4;Marseille,1,0,4,3;Le Havre,0,2,3,2",
+r:["Brest,PSG,0,1,09-13T18:45","Monaco,Lens,2,1,09-18T18:45","Paris FC,Strasbourg,2,1,09-19T15:15","Angers,Troyes,2,0,09-19T18:45","Le Mans,Lorient,2,1,09-19T18:45","Lyon,Rennes,4,0,09-19T18:45","Toulouse,Le Havre,3,2,09-19T18:45","Auxerre,Brest,2,1,09-20T13:00","Nice,Lille,2,1,09-20T15:15","Marseille,PSG,1,2,09-20T18:45"],
+u:["Lens,Lyon,10-09T18:45,39.4,25.6,35","Lille,Le Havre,10-10T15:15,67.1,19.1,13.8","Brest,Angers,10-10T18:45,47.5,25.9,26.6","Lorient,Paris FC,10-10T18:45,29.6,28.1,42.3","Monaco,Toulouse,10-10T18:45,60.2,21.6,18.2","PSG,Le Mans,10-10T18:45,90.3,6.7,3","Nice,Strasbourg,10-11T13:00,41.6,26.3,32.1","Rennes,Auxerre,10-11T15:15,66.9,18.4,14.7","Troyes,Marseille,10-11T18:45,25,24.5,50.5","Le Mans,Toulouse,10-16T18:45,31.2,26.7,42.1"]},
+{id:"ucl",n:"ยูฟ่า แชมเปียนส์ลีก",c:"ยุโรป",f:"🇪🇺",s:"PSG,Bayern,Barcelona,Man United,Como,Sporting CP,Stuttgart,Man City,Aston Villa,Lens,Real Betis,Dortmund,Liverpool,Real Madrid,Arsenal,AEK Athens".split(",").map(n=>n+",1,0,0,3").join(";")+";"+"Roma,Shakhtar,Fenerbahce,PSV".split(",").map(n=>n+",0,1,0,1").join(";")+";"+"Villarreal,Club Brugge,Lille,Slavia Prague,Atletico Madrid,Inter,LASK Linz,Napoli,Galatasaray,Viking,Porto,RB Leipzig,Feyenoord,Sabah,Slovan Bratislava,Bodo/Glimt".split(",").map(n=>n+",0,0,1,0").join(";"),
+r:["Liverpool,Atletico Madrid,2,1,09-09T19:00","PSG,Slovan Bratislava,6,1,09-09T19:00","Sporting CP,Galatasaray,3,1,09-09T19:00","Napoli,Arsenal,0,1,09-09T19:00","Fenerbahce,Roma,1,1,09-10T16:45","PSV,Shakhtar,1,1,09-10T16:45","Como,RB Leipzig,4,1,09-10T19:00","Bayern,Bodo/Glimt,5,0,09-10T19:00","Man United,Sabah,4,0,09-10T19:00","Slavia Prague,Lens,2,3,09-10T19:00"],
+u:["Lens,Sporting CP,10-13T16:45,38.4,25.3,36.3","Sabah,Slavia Prague,10-13T16:45,27.2,25.2,47.6","Arsenal,Lille,10-13T19:00,77.1,14.8,8.1","Atletico Madrid,Man United,10-13T19:00,43.6,24.6,31.8","Inter,Club Brugge,10-13T19:00,75.6,15.1,9.3","Galatasaray,Barcelona,10-13T19:00,11.9,14,74.1","RB Leipzig,PSV,10-13T19:00,47.1,23.5,29.4","Viking,Bayern,10-13T19:00,4.5,7.6,87.9","Villarreal,Napoli,10-13T19:00,42.8,26.6,30.6","Feyenoord,Como,10-14T16:45,26.9,23.3,49.8"]},
+{id:"thai",gp:3,n:"ไทยลีก",c:"ไทย",f:"🇹🇭",s:"Buriram,,,,7;Rayong,,,,7;Uthai Thani,,,,6;Prachuap,,,,6;Bangkok United,,,,6;Port,,,,6;Ayutthaya,,,,6;BG Pathum,,,,4;Ratchaburi,,,,4;Chiangrai,,,,4;Pattani,,,,4;Sukhothai,,,,3;Sisaket,,,,3;Rasisalai,,,,1;Lamphun,,,,1;Chonburi,,,,0",
+r:["Rayong,Prachuap,1,0,09-05T11:00","Rasisalai,Port,1,2,09-05T11:00","Sukhothai,Buriram,1,3,09-06T11:00","Lamphun,Uthai Thani,1,4,09-06T11:00","Ayutthaya,Ratchaburi,2,1,09-06T11:00","Buriram,Chiangrai,1,1,09-11T11:00","Port,Lamphun,2,1,09-11T11:00","Sisaket,Ayutthaya,0,1,09-12T11:00","Uthai Thani,Pattani,1,2,09-12T11:00","Prachuap,Sukhothai,1,0,09-13T11:00","Ayutthaya,Uthai Thani,1,2,09-18T11:00","Pattani,Prachuap,0,3,09-19T11:00","Chonburi,Buriram,0,1,09-20T11:00","Sukhothai,Port,2,1,09-20T11:00"],
+u:["Ratchaburi,Sukhothai,10-09T11:00","BG Pathum,Ayutthaya,10-10T11:00","Buriram,Rayong,10-10T11:30","Uthai Thani,Rasisalai,10-10T12:00","Prachuap,Chiangrai,10-11T11:00","Lamphun,Bangkok United,10-11T11:00","Sisaket,Chonburi,10-11T11:30","Ayutthaya,Lamphun,10-16T12:00","Chonburi,Prachuap,10-17T11:30","Sisaket,BG Pathum,10-18T11:00","Bangkok United,Port,10-18T11:00","Chiangrai,Ratchaburi,10-18T11:30","Pattani,Buriram,10-18T12:00"]},
+{id:"jl",gp:8,n:"เจลีก",c:"ญี่ปุ่น",f:"🇯🇵",s:"Vissel Kobe,,,,19;Kashiwa Reysol,,,,18;Sanfrecce Hiroshima,,,,17;Machida Zelvia,,,,17;FC Tokyo,,,,17;Yokohama F. Marinos,,,,14;Kawasaki Frontale,,,,13;Kashima Antlers,,,,13;Fagiano Okayama,,,,13;Urawa Reds,,,,12;Cerezo Osaka,,,,11;Shimizu S-Pulse,,,,10;Mito Hollyhock,,,,9;Kyoto Sanga,,,,8;V-Varen Nagasaki,,,,8;Gamba Osaka,,,,6;Nagoya Grampus,,,,6;Avispa Fukuoka,,,,4;Tokyo Verdy,,,,4;JEF United,,,,4",
+u:["Kashima Antlers,Gamba Osaka,10-09T10:00","Kashiwa Reysol,Vissel Kobe,10-09T10:00","Cerezo Osaka,Yokohama F. Marinos,10-10T05:00","Avispa Fukuoka,Fagiano Okayama,10-10T06:00","FC Tokyo,Urawa Reds,10-10T06:00","Kyoto Sanga,Machida Zelvia,10-10T10:00","JEF United,V-Varen Nagasaki,10-11T05:00","Mito Hollyhock,Shimizu S-Pulse,10-11T06:00","Tokyo Verdy,Sanfrecce Hiroshima,10-11T06:00","Kawasaki Frontale,Nagoya Grampus,10-11T07:00"]},
+{id:"mls",s:"Nashville,18,6,3,60;Vancouver,15,5,7,50;St. Louis,13,8,6,47;FC Dallas,13,8,6,47;New England,14,4,9,46;Inter Miami,12,10,5,46;Chicago,13,6,8,45;San Jose,13,6,8,45;Houston,13,5,9,44;Charlotte,12,7,8,43;LAFC,11,8,9,41;Philadelphia,11,6,10,39;Seattle,10,8,9,38;Colorado,11,3,13,36;LA Galaxy,9,9,10,36;Orlando,10,4,13,34;NY Red Bulls,9,6,12,33;NYCFC,8,9,10,33;Cincinnati,8,9,9,33;Portland,9,5,13,32;Real Salt Lake,9,5,13,32;San Diego,8,8,11,32;Austin,7,10,10,31;DC United,6,12,8,30;Columbus,8,5,14,29;Minnesota,7,8,12,29;Toronto,6,11,10,29;Atlanta,7,6,14,27;Montreal,6,6,15,24;Sporting KC,6,3,18,21",n:"เมเจอร์ลีก ซอกเกอร์ สหรัฐฯ",c:"สหรัฐฯ",f:"🇺🇸",
+r:["Nashville,Toronto,2,0,09-27T00:30","Seattle,Minnesota,3,1,09-27T00:30","Real Salt Lake,New England,3,0,09-27T01:30","LA Galaxy,Colorado,3,2,09-27T02:30","San Jose,Portland,3,1,09-27T02:30","Vancouver,DC United,3,3,09-27T02:30","Columbus,Inter Miami,2,1,09-27T23:00","NY Red Bulls,St. Louis,0,3,09-30T23:30","Seattle,Sporting KC,2,1,10-02T01:30","Chicago,Vancouver,3,1,10-07T00:30"],
+u:["Toronto,Montreal,10-10T17:00,48.8,24.4,26.8","Chicago,NYCFC,10-10T18:30,49.8,24.6,25.6","Atlanta,Cincinnati,10-10T23:30,39.3,24,36.7","Charlotte,FC Dallas,10-10T23:30,43.2,24.8,32","Inter Miami,DC United,10-10T23:30,69.3,16.3,14.4","New England,Seattle,10-10T23:30,49.7,24.4,25.9","NY Red Bulls,San Diego,10-10T23:30,36.2,24.1,39.7","Orlando,Columbus,10-10T23:30,45.4,23.9,30.7","Philadelphia,Real Salt Lake,10-10T23:30,67.2,17.8,15","Austin,Nashville,10-11T00:30,24.6,25,50.4"]}];
+const TODAY=`🇫🇮 ฟินแลนด์ ไวเคาส์ลีก้า|กนิสตัน เฮลซิงกิ|อินเตอร์ ตูร์คู|22:59|0
+🇫🇮 ฟินแลนด์ ยัคโคเน่น|คูพีเอส (เยาวชน)|อินเตอร์ ตูร์คู 2|22:59|0
+🇯🇵 เจแปน เอ็มเพอเรอร์ คัพ|อูราวะ เรด|โอมิยะ อาร์ดิย่า|16:00|0
+🇯🇵 เจแปน เอ็มเพอเรอร์ คัพ|ซานเฟรซเซ่ ฮิโรชิม่า|อิวากิ เอฟซี|16:30|0
+🇯🇵 เจแปน เอ็มเพอเรอร์ คัพ|อวิสปา ฟูกูโอกะ|โยโกฮาม่า เอฟซี|16:30|0
+🇯🇵 เจแปน เอ็มเพอเรอร์ คัพ|เซเรโซ่ โอซาก้า|คาโกชิม่า ยูไนเต็ด|16:30|0
+🇯🇵 เจแปน เอ็มเพอเรอร์ คัพ|เอฟซี โตเกียว|โชนัน เบลมาเร่|17:00|0
+🇯🇵 เจแปน เอ็มเพอเรอร์ คัพ|คาวาซากิ ฟรอนตาเล่|มิยาซากิ|17:00|0
+🇯🇵 เจแปน เอ็มเพอเรอร์ คัพ|ฟาเจียโน่ โอคายาม่า|เจอีเอฟ ยูไนเต็ด|17:00|0
+🇯🇵 เจแปน เอ็มเพอเรอร์ คัพ|ชิมิสุ เอส-พัลส์|วี-วาเรน นากาซากิ|17:00|0
+🇯🇵 เจแปน เอ็มเพอเรอร์ คัพ|ไกนาเร โตโตริ|โตเกียวเวอร์ดี้|17:00|0
+🌍 กระชับมิตรทีมชาติหญิง|จอร์แดน (หญิง)|อาร์เมเนีย (หญิง)|22:00|0
+🌏 ชิงแชมป์สโมสรอาเซียน|บุรีรัมย์ ยูไนเต็ด|บอร์เนียว เอฟซี|19:00|0
+🌏 ชิงแชมป์สโมสรอาเซียน|ราชบุรี เอฟซี|โฮจิมินห์ ซิตี้|19:00|0
+🌏 ชิงแชมป์สโมสรอาเซียน|กูชิง ซิตี้|แทมปิเนส โรเวอร์|20:00|0
+🇹🇭 ไทย ลีก คัพ|เอฟซี ยะลา|สุราษฎร์ธานี ซิตี้|19:00|0
+🇪🇬 อียิปต์ ลีก คัพ|พีระมิดส์ เอฟซี|อัล คานาห์|21:00|0
+🇪🇬 อียิปต์ ลีก คัพ|แอสซุส|อัล อาห์ลี|21:00|0
+🇪🇬 อียิปต์ ลีก คัพ|ซามาเล็ค|เซด เอฟซี|00:00|1
+🇪🇬 อียิปต์ ลีก คัพ|เซรามิก้า|อัล-มาสรี่|00:00|1
+🇨🇦 แคนาดา พรีเมียร์ลีก|อินเตอร์ โตรอนโต้|ซูปร้า ดู ควิเบก|22:00|0
+🇨🇦 แคนาดา พรีเมียร์ลีก|โฟร์จ เอฟซี|แปซิฟิก เอฟซี|06:00|1
+🇨🇱 ชิลี คัพ|อันโตฟากัสต้า|ยูนิเวอร์ซิดัด เดอ ชิลี|05:00|1
+🇨🇱 ชิลี คัพ|โกคิมโบ ยูนิโด|โคเบรลัว|05:00|1
+🇧🇷 บราซิล เซเรีย เอ|บรากันติโน่|มิราสโซล|05:30|1
+🇧🇷 บราซิล เซเรีย เอ|อินเตอร์นาซิอองนาล|โครินเธียนส์|05:30|1
+🇧🇷 บราซิล เซเรีย เอ|เรโม่ เบเลม|เกรมิโอ้ ปอร์โต้|05:30|1
+🇧🇷 บราซิล เซเรีย เอ|วิตอเรีย BA|ชาเปโคเอนเซ่|06:00|1
+🇧🇷 บราซิล เซเรีย เอ|โบตาโฟโก้ อาร์เจ|วาสโก ดา กาม่า|06:30|1
+🇧🇷 บราซิล เซเรีย เอ|ครูไซโร่|เซาเปาโล|07:30|1
+🇧🇷 บราซิล ซีรี่บี|โอเปราริโอ้|โบต้าโฟโก้ เอสพี|05:30|1
+🇧🇷 บราซิล ซีรี่บี|อาไว|ลอนดริน่า|05:30|1
+🇧🇷 บราซิล ซีรี่บี|วิลา โนว่า|คุยอาบ้า|06:30|1
+🇧🇷 บราซิล ซีรี่บี|อเมริกา มิไนโร่|ฟอร์ตาเลซ่า|06:30|1
+🇧🇷 บราซิล ซีรี่บี|CRB แม็คซิโอ้|แอตเลติโก้ กัวเนนเซ่|06:30|1`;
+
+
+const LU=s=>s.split(";").map(x=>x.split("|"));
+const MD={
+"Man City|Sunderland":{src:"SportRadar",ev:[[8,"y","a"],[9,"g","h",1,0],[12,"g","a",1,1],[29,"g","h",2,1],[33,"g","a",2,2],[43,"g","h",3,2],[57,"g","h",4,2],[59,"g","a",4,3],[60,"s","a"],[68,"s","a"],[74,"s","h"],[79,"s","a"],[82,"g","h",5,3],[85,"s","h"]],
+ st:{h:[57,15,6,6,14,0,0,0,0],a:[43,15,6,5,14,0,1,0,0]},
+ lu:{h:LU("Donnarumma, Gianluigi|G;Nunes, Matheus|M;Dias, Ruben|D;Guehi, Marc|D;Gvardiol, Josko|D;Fernandez, Enzo|M;Anderson, Elliot|M;Semenyo, Antoine|M;Cherki, Rayan|M;Ndiaye, Iliman|F;Haaland, Erling|F;Elias, Allan|F;Bouaddi, Ayyoub|M;Khusanov, Abdukodir|D;O'Reilly, Nico|D"),
+ a:LU("Roefs, Robin|G;Mukiele, Nordi|D;Danso, Kevin|D;Ballard, Daniel|D;Methalie, Dayann|D;Xhaka, Granit|M;Sadiki, Noah|M;Meunier, Thomas|D;Le Fee, Enzo|M;Angulo, Nilson|F;Brobbey, Brian|F;Fofana, Malick|F;Rigg, Chris|M;Ahoka, Jules|M;Talbi, Chemsdine|M")}},
+"Tottenham|Aston Villa":{src:"SportRadar",ev:[[19,"s","h"],[45,"g","a",0,1],[45,"y","h"],[46,"s","a"],[46,"s","h"],[46,"y","a"],[66,"s","h"],[67,"g","a",0,2],[72,"s","a"],[79,"g","a",0,3],[84,"s","a"],[84,"s","a"],[84,"s","h"],[84,"s","h"],[86,"g","h",1,3],[88,"s","a"],[90,"y","a"],[90,"g","h",2,3]],
+ st:{h:[63,18,8,11,9,5,1,0,3],a:[37,14,6,1,13,2,2,0,1]},
+ lu:{h:LU("Kinsky, Antonin|G;Porro, Pedro|D;van Hecke, Jan-Paul|D;van de Ven, Micky|D;Robertson, Andy|D;Bentancur, Rodrigo|M;Tonali, Sandro|M;Savinho|M;Fernandes, Mateus|M;Marmoush, Omar|F;Solanke, Dominic|F;Bergvall, Lucas|M;Dubravka, Martin|G;Gray, Archie|M;Udogie, Destiny|D"),
+ a:LU("Suzuki, Zion|G;Wan-Bissaka, Aaron|D;Lindelof, Victor|D;Mings, Tyrone|D;Ruggeri, Matteo|D;Kamara, Boubacar|M;Gomes, Joao|M;McGinn, John|M;Buendia, Emiliano|M;Manzambi, Johan|M;Jackson, Nicolas|F;Wright, James|G;Mbaye, Ibrahim|F;Hemmings, George|M;Bogarde, Lamare|M")}}};
+const ICON={g:"⚽",og:"⚽",pg:"⚽",pm:"❌",y:"🟨",r:"🟥",yr:"🟨🟥",s:"🔄",v:"📺",i:"🩹"};
+const LBL={g:"ประตู",og:"ทำเข้าประตูตัวเอง",pg:"ประตูจากจุดโทษ",pm:"พลาดจุดโทษ",y:"ใบเหลือง",r:"ใบแดง",yr:"ใบเหลืองใบที่ 2 (ไล่ออก)",s:"เปลี่ยนตัว",v:"VAR",i:"ผู้เล่นบาดเจ็บ"};
+const NA='<span class="na">ไม่มีข้อมูล</span>';
+const ini=n=>n.split(/\s+/).map(w=>w[0]).join("").slice(0,3).toUpperCase();
+const meta=m=>{const n=m.lg,c=[];if(/หญิง|Women/i.test(n))c.push("หญิง");const u=n.match(/U-?(\d\d)/);if(u)c.push("U"+u[1]);c.push(/ทีมชาติ/.test(n)?"ทีมชาติ":/ชิงแชมป์|แชมเปียนส์/.test(n)?"ระดับทวีป":/ซูเปอร์|Super/.test(n)?"Super Cup":/คัพ|Cup/.test(n)?"ถ้วย":"ลีก");return c};
+</script>
+<script>
+// ข้อมูลอยู่ใน data.js
+// ---------- สร้างรายการแมตช์ ----------
+const M=[];const add=o=>(o.id=M.length,M.push(o),o);
+const MV=()=>M.filter(m=>!m.stale);var FEED={ok:false};
+L.forEach(l=>{l.m=[];
+ (l.r||[]).forEach(s=>{const[h,a,x,y,t]=s.split(",");l.m.push(add({lg:l.n,lid:l.id,h,a,x:+x,y:+y,k:Date.parse("2026-"+t+":00Z"),s:"FT"}))});
+ (l.u||[]).forEach(s=>{const[h,a,t,p1,p2,p3]=s.split(",");l.m.push(add({lg:l.n,lid:l.id,h,a,k:Date.parse("2026-"+t+":00Z"),s:"UP",p:p1?[+p1,+p2,+p3]:null}))});});
+const TD=TODAY.split("\n").map(r=>{const[c,h,a,t,d]=r.split("|");return add({lg:c,h,a,t:1,k:Date.parse(`2026-10-0${7+ +d}T${t}:00+07:00`),s:"EST"})}).sort((a,b)=>a.k-b.k);
+
+TD.forEach(m=>{if(m.lg.includes("เอ็มเพอเรอร์"))m.rd="Round 3"});
+// ---------- ตัวช่วย ----------
+const $=s=>document.querySelector(s);
+const fmt=k=>new Date(k).toLocaleString("th-TH",{timeZone:"Asia/Bangkok",weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})+" น.";
+const st=m=>{if(m.z)return m.z;if(m.s!="EST")return m.s;const d=(Date.now()-m.k)/6e4;return d<0?"UP":d<=115?"LIVE":"FT"};
+const ZL={PPD:"เลื่อนการแข่งขัน",CANC:"ยกเลิก",ABD:"ยุติกลางคัน"};const lab=m=>{const s=st(m);if(ZL[s])return ZL[s];return s=="LIVE"?(m.ext!=null?`<span class="live">● ${m.phase=="HT"?"พักครึ่ง":m.min!=null?m.min+(m.extra?"+"+m.extra:"")+"'":"LIVE"}</span>`:`<span class="live">● น่าจะเตะอยู่</span>`):s=="FT"?(m.t?"น่าจะจบแล้ว":"จบเกม"):"รอแข่ง"};
+const hasSc=m=>m.x!=null&&(m.s=="FT"||st(m)=="LIVE");
+const sc=m=>hasSc(m)?`${m.x} : ${m.y}`:"– : –";
+function card(m){return `<div class="match-card" data-m="${m.id}"><div class="league">${m.lg}</div><div class="teams"><div class="team">${m.h}</div><div><div class="score">${sc(m)}</div></div><div class="team">${m.a}</div></div><div class="when">${lab(m)} · ${fmt(m.k)}</div></div>`}
+function row(m){const f=window.FAV&&(FAV.has(m.h)||FAV.has(m.a)),s=st(m),T=k=>new Date(m.k).toLocaleString("th-TH",Object.assign({timeZone:"Asia/Bangkok"},k)),p=m.s=="UP"&&m.p,mx=p?m.p.indexOf(Math.max(...m.p)):-1;
+return `<div class="fixture lv${f?" fav":""}" data-m="${m.id}"><span class="star${f?" on":""}" title="ทีมโปรด">${f?"★":"☆"}</span><span class="tm">${s=="LIVE"&&m.ext!=null?`<b class="live">${m.phase=="HT"?"HT":m.min!=null?m.min+"'":"LIVE"}</b><small>LIVE</small>`:`${T({hour:"2-digit",minute:"2-digit",hour12:false})}<small>${T({day:"numeric",month:"short"})}</small>`}</span><span class="stt">${s=="LIVE"?'<b class="live">●</b>':s=="FT"?"จบ":ZL[s]?"⚠":""}</span><span class="th">${m.h}</span><b class="sc2 ${hasSc(m)?"fin":""}">${hasSc(m)?m.x+" - "+m.y:"vs"}</b><span class="ta">${m.a}</span><span class="p3" title="โอกาสชนะ % เจ้าบ้าน / เสมอ / เยือน">${p?m.p.map((v,i)=>`<i class="${i==mx?"hi":""}">${Math.round(v)}</i>`).join(""):""}</span></div>`}
+
+// ---------- เพจ ----------
+let prev="home";
+function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id==id));document.querySelectorAll(".nav").forEach(n=>n.classList.toggle("active",n.dataset.page==id));window.scrollTo(0,0)}
+function renderHome(){
+  const live=TD.filter(m=>st(m)=="LIVE"),next=TD.find(m=>st(m)=="UP");
+  $("#liveCount").textContent=live.length;
+  $("#heroSub").textContent=live.length?`จากทั้งหมด ${TD.length} คู่วันนี้`:(next?`นัดต่อไป ${next.h} พบ ${next.a} · ${fmt(next.k)}`:"วันนี้เตะครบแล้ว");
+  $("#livePreview").innerHTML=live.length?live.slice(0,6).map(card).join(""):`<div class="empty" style="grid-column:1/-1">ตอนนี้ไม่มีคู่ที่น่าจะเตะอยู่ ดูโปรแกรมทั้งหมดที่หน้า "วันนี้"</div>`;
+  const up=MV().filter(m=>m.s=="UP"&&m.p).sort((a,b)=>a.k-b.k).slice(0,6);
+  $("#upcoming").innerHTML=up.map(m=>`<div class="fixture" data-m="${m.id}"><div class="date">${fmt(m.k)}</div><div class="teams2"><span>${m.h}</span><span>vs</span><span>${m.a}</span></div><div class="st">${m.lg.split(" ")[0]}</div></div>`).join("");
+}
+let tf="A";
+function renderToday(){
+  const cnt={LIVE:0,UP:0,FT:0};TD.forEach(m=>cnt[st(m)]++);
+  const F=[["A","ทั้งหมด ("+TD.length+")"],["LIVE",(FEED.ok?"กำลังเตะ (":"น่าจะเตะอยู่ (")+cnt.LIVE+")"],["UP","รอแข่ง ("+cnt.UP+")"],["FT",(FEED.ok?"จบแล้ว (":"น่าจะจบแล้ว (")+cnt.FT+")"]];
+  $("#todayFilters").innerHTML=F.map(f=>`<button class="filter ${tf==f[0]?"active":""}" data-f="${f[0]}">${f[1]}</button>`).join("");
+  const g={};TD.filter(m=>tf=="A"||st(m)==tf).forEach(m=>(g[m.lg]=g[m.lg]||[]).push(m));
+  $("#todayList").innerHTML=Object.keys(g).map(c=>`<h3 class="group-h">${c}</h3><div class="fixture-list">${g[c].map(row).join("")}</div>`).join("")||`<div class="empty">ไม่มีแมตช์ในหมวดนี้</div>`;
+}
+function renderLeagues(){
+  $("#leagueGrid").innerHTML=L.map(l=>`<div class="league-card" data-l="${l.id}"><div class="flag">${l.f}</div><h3>${l.n}</h3><p>${l.c} · ${l.m?"<b class='accent'>มีข้อมูล</b>":"ยังไม่ได้ดึงข้อมูล"}</p></div>`).join("");
+}
+let curL=null,lt="r";
+function openLeague(id){
+  curL=L.find(l=>l.id==id);lt="r";drawLeague();showPage("leagueDetail");
+}
+function tbl(l){const rows=(l.s||"").split(";").filter(Boolean).map((r,i)=>{const[n,w,d,x,p]=r.split(","),k=w!=="";return `<tr><td>${i+1}</td><td class="tn">${n}</td><td>${k?+w+ +d+ +x:l.gp}</td><td>${k?w:"–"}</td><td>${k?d:"–"}</td><td>${k?x:"–"}</td><td><b>${p}</b></td></tr>`}).join("");return rows?`<div class="tw"><table class="tbl"><thead><tr><th>#</th><th>ทีม</th><th>เล่น</th><th>ชนะ</th><th>เสมอ</th><th>แพ้</th><th>แต้ม</th></tr></thead><tbody>${rows}</tbody></table></div>`:`<div class="empty">ยังไม่มีตารางคะแนน</div>`}
+function drawLeague(){
+  const l=curL;
+  $("#leagueHeader").innerHTML=`<div class="flag">${l.f}</div><h1>${l.n}</h1><p class="st">${l.c}</p>`;
+  if(!l.m){$("#leagueTabs").innerHTML="";$("#leagueMatches").innerHTML=`<div class="empty">ลีกนี้ยังไม่ได้ดึงข้อมูล บอก Claude ให้ดึงผลและโปรแกรมของลีกนี้มาเพิ่มได้</div>`;return}
+  $("#leagueTabs").innerHTML=[["r","ผลล่าสุด"],["u","โปรแกรมถัดไป"],["s","ตารางคะแนน"]].map(t=>`<button class="tab ${lt==t[0]?"active":""}" data-t="${t[0]}">${t[1]}</button>`).join("");
+  if(lt=="s"){$("#leagueMatches").innerHTML=tbl(l);return}const list=l.m.filter(m=>!m.stale&&((st(m)=="FT")==(lt=="r"))).sort((a,b)=>lt=="r"?b.k-a.k:a.k-b.k).slice(0,20);
+  $("#leagueMatches").innerHTML=list.map(row).join("")||`<div class="empty">ยังไม่มีข้อมูลส่วนนี้</div>`;
+}
+// ================= MATCH CENTER =================
+// Data model — Match: {id,lg,rd?,h,a,k,s,z?,x,y,ext?,agg?:[h,a],pens?:[{s,p,ok}],d?:Detail}
+// Detail: {src, ev:[min,type,side,h?,a?,extra?], st:{h:[poss,shots,sot,corners,fouls,offs,yel,red,inj],a:[..]}, lu:{h:[[name,pos]],a:[..]}}
+// type: g=ประตู og=OG pg=จุดโทษเข้า pm=พลาดจุดโทษ y r yr s=เปลี่ยนตัว v=VAR i=บาดเจ็บ ht ft
+// extra: {p:ผู้เล่น, as:แอสซิสต์, i:เข้า, o:ออก, n:หมายเหตุ, a:ทดเวลา(นาที), ph:"ET"|"PEN"}
+// API: ตั้ง url (มี {id}) ให้ชี้ proxy ของ provider เพื่อให้ Live อัปเดตเอง; ว่างไว้ = ไม่เชื่อม API (หน้าที่เผยแพร่บน claude.ai เรียก API ภายนอกไม่ได้)
+const API={url:"",headers:{},poll:15000};
+const AD={sr:j=>({z:({live:"LIVE",inprogress:"LIVE",final:"FT",closed:"FT",postponed:"PPD",cancelled:"CANC",abandoned:"ABD"})[j.status],d:{src:"SportRadar",
+ ev:(j.key_events||[]).map(e=>[e.time,({score_change:"g",yellow_card:"y",red_card:"r",substitution:"s"})[e.type]||"?",(e.team||"?")[0],e.home_score,e.away_score]).filter(e=>e[1]!="?"),
+ st:j.team_stats&&Object.fromEntries(["h","a"].map(k=>{const x=j.team_stats[j[k=="h"?"home":"away"]]||{};return[k,[x.ball_possession,x.shots_total,x.shots_on_target,x.corner_kicks,x.fouls,x.offsides,x.yellow_cards,x.red_cards,x.injuries]]})),
+ lu:j.lineups&&Object.fromEntries(["h","a"].map(k=>[k,(j.lineups[j[k=="h"?"home":"away"]]||[]).map(s=>{const q=s.match(/^(.*) \((\w)/);return[q?q[1]:s,q?q[2][0].toUpperCase():""]})]))}})};
+
+function getMatch(m){const d=m.d||MD[m.h+"|"+m.a]||null;const ev=((d&&d.ev)||[]).map(e=>Object.assign({m:e[0],t:e[1],s:e[2],sc:e[3]==null?null:[e[3],e[4]]},e[5]||{}));ev.sort((a,b)=>(a.m+(a.a||0)/100)-(b.m+(b.a||0)/100));return{d,ev,st:d&&d.st,lu:d&&d.lu,src:d&&d.src}}
+const mm=e=>e.a?`${e.m}+${e.a}'`:`${e.m}'`;
+const sys=(i,x)=>`<div class="sys">${i} ${x}</div>`;
+function tlRows(m,g){const s=st(m),r=[sys("▶","เริ่มการแข่งขัน · "+fmt(m.k))];
+ if(s=="UP")r.push(sys("🕒","ยังไม่เริ่ม"));
+ else if(!g.ev.length&&s!="PPD"&&s!="CANC")r.push(`<div class="note">ไม่มีข้อมูลเหตุการณ์ของแมตช์นี้ (ไม่แสดงข้อมูลที่เดาเอง)</div>`);
+ g.ev.forEach(e=>{const tn=e.s=="h"?m.h:e.s=="a"?m.a:"";let b=`<b>${ICON[e.t]||"•"} ${LBL[e.t]||"เหตุการณ์"}</b>`;
+  if(e.sc)b+=`<span class="sc">${e.sc[0]}–${e.sc[1]}</span>`;
+  if(e.p)b+=`<small>${e.p}</small>`;if(e.as)b+=`<small>แอสซิสต์: ${e.as}</small>`;if(e.i||e.o)b+=`<small>เข้า ${e.i||"–"} · ออก ${e.o||"–"}</small>`;if(e.n)b+=`<small>${e.n}</small>`;
+  r.push(`<div class="ev"><div class="eh">${e.s=="h"?b:""}</div><div class="mn" title="${tn}">${mm(e)}</div><div class="ea">${e.s=="a"?b:""}</div></div>`)});
+ if(s=="FT")r.push(sys("⏱",`จบการแข่งขัน ${sc(m)}`));else if(ZL[s])r.push(sys("⚠️",ZL[s]));
+ return r}
+const SR=[["การครองบอล (%)",0],["ยิงทั้งหมด",1],["ยิงตรงกรอบ",2],["เตะมุม",3],["ฟาวล์",4],["ล้ำหน้า",5],["ใบเหลือง",6],["ใบแดง",7],["ผู้เล่นบาดเจ็บ (จำนวน)",8]];
+const nm=n=>n.includes(", ")?n.split(", ").reverse().join(" "):n;
+function panel(m,g){
+ if(mt=="a"){const a=article(m);return a?a.html:`<div class="empty">ยังไม่มีข้อมูลพอสำหรับบทวิเคราะห์ของแมตช์นี้</div>`}
+ if(mt=="l"){if(!g.lu)return `<div class="empty">ไม่มีข้อมูลรายชื่อผู้เล่น</div>`;
+  return `${m.ext!=null?'<div class="note">ตัวจริงเรียงก่อน ตามด้วยตัวสำรอง (มีคำว่า "สำรอง" ต่อท้ายชื่อ)</div>':'<div class="note">แหล่งข้อมูลนี้ให้รายชื่อผู้เล่น แต่ไม่ระบุว่าใครเป็นตัวจริง/ตัวสำรอง และไม่มีผู้จัดการทีม</div>'}<div class="lu">${["h","a"].map(k=>`<div><h3>${k=="h"?m.h:m.a}</h3><ul>${(g.lu[k]||[]).map(x=>`<li><span class="pos">${x[1]}</span>${nm(x[0])}</li>`).join("")}</ul></div>`).join("")}</div>`}
+ if(mt=="s"){if(!g.st)return `<div class="empty">ไม่มีสถิติหลังเกม</div>`;
+  const row=(l,a,b)=>{const t=a+b,w=t?a/t*100:50;return `<div class="sr"><div class="v"><span>${a}</span><span>${b}</span></div><div class="l">${l}</div><div class="sb"><i style="width:${w}%"></i></div></div>`};
+  return SR.map(x=>g.st.h[x[1]]==null?"":row(x[0],g.st.h[x[1]],g.st.a[x[1]])).join("")+`<div class="sr"><div class="l">ความแม่นยำการจ่ายบอล: ${NA} · xG: ${NA}</div></div>`}
+ let h=`<div class="tl" id="tlb" data-m="${m.id}" aria-live="polite">${tlRows(m,g).join("")}</div>`;
+ if(m.ext==null&&g.ev.length&&g.ev.some(e=>!e.p))h=`<div class="note">แหล่งข้อมูลนี้ให้เฉพาะนาที ประเภท ทีม และสกอร์ของเหตุการณ์ ไม่มีชื่อผู้เล่น/แอสซิสต์/เปลี่ยนตัวเข้า-ออก/VAR/จุดโทษ</div>`+h;
+ if(m.pens)h+=`<h3>ดวลจุดโทษ</h3>`+m.pens.map((x,i)=>`<div class="sr">${i+1}. ${x.s=="h"?m.h:m.a} — ${x.p} ${x.ok?"✅":"❌"}</div>`).join("");
+ return h}
+// ================= บทความวิเคราะห์ (สร้างจากข้อมูลจริงที่มีในระบบเท่านั้น) =================
+const lgOf=m=>L.find(l=>l.id==m.lid);
+function pos(l,n){if(!l.s)return null;const r=l.s.split(";").map(x=>x.split(",")),i=r.findIndex(x=>x[0]==n);if(i<0)return null;const x=r[i];return{i:i+1,n:r.length,pt:x[4],P:x[1]!==""?+x[1]+ +x[2]+ +x[3]:l.gp}}
+function form(l,n,before){const f=l.m.filter(x=>x.s=="FT"&&(x.h==n||x.a==n)&&x.k<before).sort((a,b)=>b.k-a.k).slice(0,5);if(!f.length)return null;const o={n:f.length,w:0,d:0,l:0,gf:0,ga:0};f.forEach(x=>{const h=x.h==n,a=h?x.x:x.y,b=h?x.y:x.x;o.gf+=a;o.ga+=b;a>b?o.w++:a==b?o.d++:o.l++});return o}
+function article(m){const l=lgOf(m),s=st(m),g=getMatch(m);if(!l||(s!="UP"&&s!="FT"))return null;
+ const P=[],ph=pos(l,m.h),pa=pos(l,m.a),fh=form(l,m.h,m.k),fa=form(l,m.a,m.k);let title,sum;
+ const ps=(n,q)=>q?`${n} อยู่อันดับ ${q.i} จาก ${q.n} ทีม ด้วย ${q.pt} แต้ม จาก ${q.P} นัด`:null;
+ const fs=(n,f)=>f?`${n} ชนะ ${f.w} เสมอ ${f.d} แพ้ ${f.l} ยิง ${f.gf} เสีย ${f.ga} ใน ${f.n} นัดล่าสุดที่มีในระบบ`:null;
+ const tb=[ps(m.h,ph),ps(m.a,pa)].filter(Boolean),fm=[fs(m.h,fh),fs(m.a,fa)].filter(Boolean);
+ if(s=="UP"){title=`${m.h} พบ ${m.a}: วิเคราะห์ก่อนเกม`;P.push(`${l.n} ${fmt(m.k)} ${m.h} รับการมาเยือนของ ${m.a}`);
+  if(tb.length)P.push(`ตารางคะแนนตอนนี้: ${tb.join(" ส่วน ")}`);
+  if(fm.length)P.push(`ฟอร์มล่าสุด: ${fm.join(" ส่วน ")}`);
+  if(m.p){const[a,b,c]=m.p,mx=Math.max(a,b,c),lead=mx==a?m.h+" (เจ้าบ้าน)":mx==c?m.a+" (ทีมเยือน)":"ผลเสมอ";sum=`${lead} ได้เปรียบ ${mx}%`;
+   P.push(`แบบจำลองของผู้ให้บริการข้อมูลให้ ${m.h} ชนะ ${a}% เสมอ ${b}% และ ${m.a} ชนะ ${c}% ทำให้${lead}มีโอกาสสูงสุดที่ ${mx}%${Math.abs(a-c)<8?" โอกาสชนะของสองทีมต่างกันไม่ถึง 8 จุด จึงถือว่าสูสี":""}`);
+   if(ph&&pa&&Math.abs(a-c)>=8&&((a>c)!=(ph.i<pa.i)))P.push("ข้อสังเกต: ฝ่ายที่แบบจำลองให้เปรียบไม่ใช่ทีมที่อยู่อันดับสูงกว่าในตารางตอนนี้")}
+  P.push("ข้อมูลชุดนี้ยังไม่รวมไลน์อัพ ผู้เล่นบาดเจ็บหรือโดนแบน และตัวเลขความน่าจะเป็นไม่ใช่ผลที่แน่นอน")}
+ else{const w=m.x>m.y?m.h:m.x<m.y?m.a:null;title=`${m.h} ${m.x}–${m.y} ${m.a}: สรุปและวิเคราะห์หลังเกม`;sum=w?`${w} ชนะ`:"เสมอกัน";
+  P.push(`${l.n}: ${w?w+" เป็นฝ่ายชนะ":"สองทีมแบ่งแต้มกัน"} ด้วยสกอร์ ${m.x}–${m.y}`);
+  const gs=g.ev.filter(e=>e.t=="g"&&e.sc);if(gs.length)P.push(`ลำดับประตู: ${gs.map(e=>`นาที ${mm(e)} (${e.sc[0]}–${e.sc[1]})`).join(", ")}`);
+  if(g.st){const a=g.st.h,b=g.st.a,pw=a[0]>b[0]?m.h:a[0]<b[0]?m.a:null;
+   P.push(`สถิติ: ${m.h} ครองบอล ${a[0]}% ยิง ${a[1]} (ตรงกรอบ ${a[2]}) ส่วน ${m.a} ครองบอล ${b[0]}% ยิง ${b[1]} (ตรงกรอบ ${b[2]})${pw?` ทีมที่ครองบอลมากกว่าคือ ${pw} ซึ่ง${pw==w?"เป็นฝ่ายชนะ":w?"แพ้ในเกมนี้":"เสมอ"}`:""}`);
+   P.push(`ประสิทธิภาพหน้าประตู: ${m.h} ยิงตรงกรอบ ${a[2]} ครั้ง ได้ ${m.x} ประตู ส่วน ${m.a} ยิงตรงกรอบ ${b[2]} ครั้ง ได้ ${m.y} ประตู ใบเหลือง ${a[6]}–${b[6]} ใบแดง ${a[7]}–${b[7]}`)}
+  else P.push("ไม่มีข้อมูลเหตุการณ์และสถิติของแมตช์นี้ จึงวิเคราะห์ได้เฉพาะสกอร์กับตารางคะแนน");
+  if(tb.length)P.push(`ตารางคะแนนปัจจุบัน: ${tb.join(" ส่วน ")}`)}
+ return{title,sum,html:`<article class="art"><h2>${title}</h2>${P.map(x=>`<p>${x}</p>`).join("")}<p class="na">บทวิเคราะห์นี้สร้างอัตโนมัติจากข้อมูลที่มีในระบบ ไม่ใช่ความเห็นของนักวิเคราะห์</p></article>`}}
+function renderArts(){$("#arts").innerHTML=MV().filter(m=>m.s=="UP"&&m.p).sort((a,b)=>a.k-b.k).slice(0,3).map(m=>{const a=article(m);return a?`<div class="match-card" data-m="${m.id}" data-a="a"><div class="league">${m.lg}</div><b>${a.title}</b><p class="st">${a.sum}</p></div>`:""}).join("")}
+let cur=null,mt="t",pt=null;
+function draw(m,full){const s=st(m),g=getMatch(m);
+ const ch=meta(m).map(c=>`<span class="chip">${c}</span>`).join("")+(m.rd?`<span class="chip">${m.rd}</span>`:"")+(s=="LIVE"?`<span class="chip live">● LIVE ${API.url?"· อัปเดตอัตโนมัติ":"· ประมาณจากเวลา ไม่ได้เชื่อม API"}</span>`:"");
+ $("#matchHeader").innerHTML=`<div class="st" style="margin-bottom:8px">${m.lg}</div><div class="chips">${ch}</div><div class="mh"><div class="tm"><div class="crest">${ini(m.h)}</div>${m.h}</div><div><div class="bigscore">${sc(m)}</div><div>${lab(m)}</div></div><div class="tm"><div class="crest">${ini(m.a)}</div>${m.a}</div></div>`;
+ const inj=g.ev.filter(e=>e.a).map(mm).join(", ");
+ const I=[["เริ่มแข่ง",fmt(m.k)],["รอบ/สเตจ",m.rd||NA],["ผลรวมสองนัด (Aggregate)",m.agg?`${m.agg[0]}–${m.agg[1]}`:NA],["ต่อเวลา / ดวลจุดโทษ",m.pens?`ดวลจุดโทษ ${m.pens.length} ครั้ง`:NA],["ผู้จัดการทีม",NA],["ทดเวลาบาดเจ็บ",inj||NA],["แหล่งข้อมูล",g.src||NA],["สกอร์ตามช่วงเวลา",g.ev.some(e=>e.sc)?"ดูที่ไทม์ไลน์":NA]];
+ if(full){$("#matchBody").innerHTML=`<div class="ig" id="minfo"></div><div class="tabs" id="mtabs"></div><div id="pnl"></div><div id="pred"></div>`}
+ $("#minfo").innerHTML=I.map(x=>`<div><small>${x[0]}</small>${x[1]}</div>`).join("");
+ $("#mtabs").innerHTML=[["t","เหตุการณ์"],["a","วิเคราะห์"],["l","ผู้เล่น"],["s","สถิติ"]].map(x=>`<button class="tab ${mt==x[0]?"active":""}" data-mt="${x[0]}">${x[1]}</button>`).join("");
+ const box=$("#tlb");
+ if(!full&&mt=="t"&&box&&box.dataset.m==m.id&&box.children.length<=tlRows(m,g).length&&inj===(box.dataset.inj||inj)){const rows=tlRows(m,g);box.insertAdjacentHTML("beforeend",rows.slice(box.children.length).join(""))}
+ else $("#pnl").innerHTML=panel(m,g);
+ $("#pred").innerHTML=m.p?`<h3 style="text-align:center">คาดการณ์ผล</h3><div class="pb"><i style="width:${m.p[0]}%;background:var(--accent)"></i><i style="width:${m.p[1]}%;background:var(--muted)"></i><i style="width:${m.p[2]}%;background:var(--red)"></i></div><div class="pl"><span>${m.h} ${m.p[0]}%</span><span>เสมอ ${m.p[1]}%</span><span>${m.a} ${m.p[2]}%</span></div>`:""}
+function poll(){clearInterval(pt);const m=cur;if(!API.url||!m||m.ext==null||st(m)!="LIVE")return;
+ pt=setInterval(async()=>{if(document.querySelector(".page.active").id!="matchDetail"){clearInterval(pt);return}
+  try{await loadDetail(m,1)}catch(e){}},API.poll)}
+function openMatch(id,tab){const m=M[id];prev=document.querySelector(".page.active").id;cur=m;mt=tab||"t";draw(m,1);showPage("matchDetail");poll();if(m.ext!=null)loadDetail(m,1).catch(()=>{})}
+function doSearch(q){
+  q=q.trim().toLowerCase();if(!q){showPage("home");return}
+  const ls=L.filter(l=>(l.n+l.c).toLowerCase().includes(q)),ms=MV().filter(m=>(m.h+" "+m.a+" "+m.lg).toLowerCase().includes(q)).slice(0,30);
+  $("#sTitle").textContent=`ผลการค้นหา "${q}"`;
+  $("#searchRes").innerHTML=ls.map(l=>`<div class="fixture" data-l="${l.id}"><div class="date">ลีก</div><div class="teams2"><span>${l.f} ${l.n}</span></div><div class="st">${l.c}</div></div>`).join("")+ms.map(row).join("")||`<div class="empty">ไม่พบข้อมูลที่ตรงกัน</div>`;
+  showPage("searchPage");
+}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-m],[data-l],[data-go],[data-page],[data-f],[data-t],[data-mt]");if(!t)return;
+  const d=t.dataset;
+  if(d.m!==undefined)openMatch(+d.m,d.a);
+  else if(d.l)openLeague(d.l);
+  else if(d.mt){mt=d.mt;draw(cur,1)}else if(d.go)showPage(d.go);
+  else if(d.page)showPage(d.page);
+  else if(d.f){tf=d.f;renderToday()}
+  else if(d.t){lt=d.t;drawLeague()}
+});
+$("#backBtn").onclick=()=>showPage(prev);
+new MutationObserver(()=>document.querySelectorAll("[data-m]:not([tabindex]),[data-l]:not([tabindex])").forEach(e=>{e.tabIndex=0;e.setAttribute("role","button")})).observe($("main"),{childList:true,subtree:true});
+document.addEventListener("keydown",e=>{if((e.key=="Enter"||e.key==" ")&&e.target.matches("[data-m],[data-l]")){e.preventDefault();e.target.click()}});
+$("#search").addEventListener("input",e=>doSearch(e.target.value));
+renderHome();renderArts();renderToday();renderLeagues();
+setInterval(()=>{renderHome();renderToday()},30000);
+</script>
+<script>// ===== วิเคราะห์ข้อมูล: Power Rankings · คาดการณ์ฤดูกาล · ภาพรวมลีก · ผู้นำสถิติ =====
+// คำนวณทั้งหมดจาก data.js — ไม่มีตัวเลขฝังในไฟล์นี้ แก้ข้อมูลที่ data.js แล้วทุกอย่างอัปเดตเอง
+const teams=l=>(l.s||"").split(";").filter(Boolean).map(r=>{const[n,w,d,x,p]=r.split(",");return w===""?null:{n,w:+w,d:+d,l:+x,p:+p,P:+w+ +d+ +x}}).filter(Boolean);
+const f1=x=>x>=99.95?"100":x<.05?"–":x.toFixed(1);
+const lgs=()=>L.filter(l=>teams(l).length);
+const tb=(h,rows)=>`<div class="tw"><table class="tbl"><thead><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${i==1?' class="tn"':""}>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+const bar=v=>`<div class="sb" style="min-width:60px"><i style="width:${Math.min(100,v)}%"></i></div>`;
+// ความแข็งแกร่ง = แต้มต่อนัด (ถ่วงเข้าค่าเฉลี่ยลีก) ผสมกับแต้มคาดหวังจากโอกาสชนะรายนัดของผู้ให้บริการ
+function rate(l){const T=teams(l),mean=T.reduce((a,t)=>a+t.p,0)/Math.max(1,T.reduce((a,t)=>a+t.P,0));
+ T.forEach((t,i)=>{t.pos=i+1;t.sp=(t.p+3*mean)/(t.P+3);
+  const u=(l.m||[]).filter(m=>m.s=="UP"&&m.p&&(m.h==t.n||m.a==t.n));
+  t.ep0=u.length?u.reduce((a,m)=>{const q=m.h==t.n?m.p:[m.p[2],m.p[1],m.p[0]];return a+(3*q[0]+q[1])/100},0)/u.length:null;
+  t.r=t.ep0==null?t.sp:.5*t.sp+.5*t.ep0;t.pw=Math.round(t.r/3*100)});return T}
+const pm=(a,b)=>{const d=a-b+.25,pd=.27*Math.exp(-d*d/1.5),pw=(1-pd)/(1+Math.exp(-1.6*d));return[pw,pd,1-pd-pw]};
+function sim(l){const T=rate(l),n=T.length,tot=2*(n-1),c=SEASON.cfg[l.id]||SEASON.cfg.default,N=SEASON.sims,ix={};T.forEach((t,i)=>ix[t.n]=i);
+ const R=T.map(t=>tot-t.P),o=T.map(()=>({ch:0,tp:0,rl:0,ep:0})),kn=(l.m||[]).filter(m=>m.s=="UP"&&m.p&&ix[m.h]!=null&&ix[m.a]!=null);
+ for(let s=0;s<N;s++){const pt=T.map(t=>t.p),rm=R.slice();
+  const play=(i,j,p)=>{const u=Math.random();if(u<p[0])pt[i]+=3;else if(u<p[0]+p[1]){pt[i]++;pt[j]++}else pt[j]+=3;rm[i]--;rm[j]--};
+  kn.forEach(m=>{const i=ix[m.h],j=ix[m.a];if(rm[i]>0&&rm[j]>0)play(i,j,m.p.map(x=>x/100))});
+  for(let g=0;g<tot;g++){const a=T.map((_,i)=>i).filter(i=>rm[i]>0);if(a.length<2)break;
+   for(let k=a.length-1;k>0;k--){const j=Math.random()*(k+1)|0;[a[k],a[j]]=[a[j],a[k]]}
+   for(let k=0;k+1<a.length;k+=2)play(a[k],a[k+1],pm(T[a[k]].r,T[a[k+1]].r))}
+  T.map((_,i)=>i).sort((x,y)=>pt[y]-pt[x]||Math.random()-.5).forEach((i,k)=>{o[i].ep+=pt[i];if(!k)o[i].ch++;if(k<c.top)o[i].tp++;if(k>=n-c.rel)o[i].rl++})}
+ return{c,T:T.map((t,i)=>({...t,ch:o[i].ch/N*100,tp:o[i].tp/N*100,rl:o[i].rl/N*100,ep:o[i].ep/N})).sort((a,b)=>b.ep-a.ep)}}
+// สถิติรายทีม: ตาราง + ผลล่าสุด (l.r) + สถิติเกม (MD)
+function buildTS(){const o={},g=(n,l)=>o[n+"|"+l.id]||(o[n+"|"+l.id]={n,lid:l.id});
+ lgs().forEach(l=>{teams(l).forEach(t=>Object.assign(g(t.n,l),t));
+  (l.m||[]).filter(m=>m.s=="FT").forEach(m=>[[m.h,m.x,m.y],[m.a,m.y,m.x]].forEach(([n,f,a])=>{const t=g(n,l);t.gf=(t.gf||0)+f;t.ga=(t.ga||0)+a;t.rn=(t.rn||0)+1}))});
+ Object.entries(MD).forEach(([k,d])=>{if(!d.st)return;const[h,a]=k.split("|"),m=M.find(x=>x.h==h&&x.a==a&&x.lid);if(!m)return;
+  [["h",h],["a",a]].forEach(([s,n])=>{const t=g(n,lgOf(m));t.dn=(t.dn||0)+1;t.ds=(t.ds||[0,0,0,0,0,0,0,0]).map((v,i)=>v+(+d.st[s][i]||0))})});
+ return Object.values(o)}
+// [key, ชื่อ, ฟังก์ชันค่า, ทศนิยม, ฟิลด์จำนวนนัด, น้อยดีกว่า?]
+const CATS=[["p","แต้ม",t=>t.p,0],["w","ชนะ",t=>t.w,0],["ppg","แต้มต่อนัด",t=>t.P?t.p/t.P:null,2],["d","เสมอ",t=>t.d,0],["l","แพ้",t=>t.l,0],
+["gf","ประตูได้ (ผลล่าสุด)",t=>t.gf,0,"rn"],["ga","เสียน้อยสุด (ผลล่าสุด)",t=>t.ga,0,"rn",1],
+["poss","ครองบอล % (เฉลี่ย)",t=>t.dn?t.ds[0]/t.dn:null,1,"dn"],["sh","ยิงต่อเกม",t=>t.dn?t.ds[1]/t.dn:null,1,"dn"],["sot","ตรงกรอบต่อเกม",t=>t.dn?t.ds[2]/t.dn:null,1,"dn"],["co","เตะมุมต่อเกม",t=>t.dn?t.ds[3]/t.dn:null,1,"dn"],["yc","ใบเหลืองต่อเกม",t=>t.dn?t.ds[6]/t.dn:null,1,"dn"]];
+const IN={tab:"pr",lid:null,cat:"p"},CACHE={};
+function renderInsights(){const G=lgs();if(!G.length)return;if(!G.find(l=>l.id==IN.lid))IN.lid=G[0].id;const l=G.find(x=>x.id==IN.lid);
+ $("#inTabs").innerHTML=[["pr","Power Rankings"],["ss","คาดการณ์ฤดูกาล"],["lg","ภาพรวมลีก"],["hub","ผู้นำสถิติ"]].map(t=>`<button class="tab ${IN.tab==t[0]?"active":""}" data-it="${t[0]}">${t[1]}</button>`).join("");
+ $("#inFilters").innerHTML=(IN.tab=="lg"?"":G.map(x=>`<button class="filter ${IN.lid==x.id?"active":""}" data-il="${x.id}">${x.f} ${x.c}</button>`).join(""))+(IN.tab=="hub"?`<div style="flex-basis:100%"></div>`+CATS.map(c=>`<button class="filter ${IN.cat==c[0]?"active":""}" data-ic="${c[0]}">${c[1]}</button>`).join(""):"");
+ let h="";
+ if(IN.tab=="pr"){const T=rate(l).sort((a,b)=>b.r-a.r);
+  h=`<div class="note">คะแนน Power (0–100) มาจากแต้มต่อนัด ผสมแต้มคาดหวังจากโอกาสชนะรายนัดของนัดถัดไป ใช้เทียบทีมภายในลีกเดียวกันเท่านั้น</div>`+tb(["#","ทีม","Power","","แต้ม/นัด","อันดับตาราง","ต่างจากตาราง"],T.map((t,i)=>{const dl=t.pos-(i+1);return[i+1,t.n,`<b>${t.pw}</b>`,bar(t.pw),(t.p/t.P).toFixed(2),t.pos,dl>0?`<span class="accent">▲${dl}</span>`:dl<0?`<span style="color:var(--red)">▼${-dl}</span>`:"–"]}))}
+ else if(IN.tab=="ss"){if(SEASON.skip.includes(l.id))h=`<div class="empty">ลีกนี้ไม่ได้ตั้งให้จำลองฤดูกาล (ดู SEASON.skip ใน data.js)</div>`;
+  else{const S=CACHE[l.id]||(CACHE[l.id]=sim(l));
+   h=`<div class="note">จำลอง ${SEASON.sims.toLocaleString()} ฤดูกาล: นัดที่มีโอกาสชนะจากผู้ให้บริการใช้ค่านั้นตรงๆ ส่วนนัดที่เหลือสุ่มคู่ตามความแข็งแกร่ง (ยังไม่มีโปรแกรมครบทั้งฤดูกาล) เป็นค่าประมาณเพื่อประกอบการอ่านเท่านั้น</div>`+
+   tb(["#","ทีม","แต้มตอนนี้","แต้มคาด","แชมป์ %","ท็อป "+S.c.top+" %","ท้าย "+S.c.rel+" %"],S.T.map((t,i)=>[i+1,t.n,`${t.p} (${t.P} นัด)`,t.ep.toFixed(1),f1(t.ch),f1(t.tp),f1(t.rl)]))}}
+ else if(IN.tab=="lg"){h=`<div class="note">ภาพรวมจากผลล่าสุดที่มีในระบบ (จำนวนนัดน้อย ค่าอาจแกว่ง) และตารางคะแนน — ไม่ใช่การจัดอันดับความแข็งแกร่งข้ามลีก เพราะข้อมูลนี้ไม่มีผลแข่งข้ามลีกพอจะเทียบ</div>`+
+  tb(["#","ลีก","นัดที่มีผล","ประตู/นัด","เจ้าบ้านชนะ %","เสมอ %","แต้ม/นัด ที่1 vs ท้าย"],G.map(x=>{const f=(x.m||[]).filter(m=>m.s=="FT"),n=f.length,T=teams(x),pp=t=>t.p/t.P;
+   return{x,n,g:n?f.reduce((a,m)=>a+m.x+m.y,0)/n:0,hw:n?f.filter(m=>m.x>m.y).length/n*100:0,dr:n?f.filter(m=>m.x==m.y).length/n*100:0,gap:T.length?pp(T[0])-pp(T[T.length-1]):0}}).sort((a,b)=>b.g-a.g).map((r,i)=>[i+1,`${r.x.f} ${r.x.n}`,r.n,r.g.toFixed(2),f1(r.hw),f1(r.dr),r.gap.toFixed(2)]))}
+ else{const c=CATS.find(x=>x[0]==IN.cat),R=buildTS().filter(t=>t.lid==IN.lid).map(t=>({n:t.n,v:c[2](t),s:t[c[4]||"P"]})).filter(r=>r.v!=null&&!isNaN(r.v));
+  R.sort((a,b)=>c[5]?a.v-b.v:b.v-a.v);
+  h=(c[4]=="dn"?`<div class="note">คิดจากแมตช์ที่มีสถิติหลังเกมใน data.js เท่านั้น (MD) จึงมีไม่กี่ทีม</div>`:c[4]=="rn"?`<div class="note">คิดจากผลล่าสุดที่มีในระบบเท่านั้น ไม่ใช่ทั้งฤดูกาล</div>`:"")+
+  (R.length?tb(["#","ทีม",c[1],"จำนวนนัด"],R.slice(0,10).map((r,i)=>[i+1,r.n,`<b>${r.v.toFixed(c[3])}</b>`,r.s])):`<div class="empty">ลีกนี้ยังไม่มีข้อมูลสำหรับสถิตินี้</div>`)}
+ $("#inBody").innerHTML=h}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-it],[data-il],[data-ic],[data-page=insights],[data-go=insights]");if(!t)return;const d=t.dataset;
+ if(d.it)IN.tab=d.it;if(d.il)IN.lid=d.il;if(d.ic)IN.cat=d.ic;renderInsights()});
+</script>
+<script>// แถบข้างซ้าย: ลีกยอดนิยม (จาก L ใน data.js) + ลีกอื่นๆ ที่มีแข่งวันนี้ (จาก TODAY) พร้อมช่องกรอง
+(function(){const side=document.getElementById("side");if(!side)return;
+ const getOthers=()=>[...new Set(TD.map(m=>m.lg))];
+ const draw=q=>{const k=(q||"").toLowerCase();
+  side.innerHTML=(window.favSideHtml?favSideHtml():"")+`<h4>ลีกยอดนิยม</h4>${L.map(l=>`<div class="si" data-l="${l.id}"><span class="fl2">${l.f}</span>${l.n}</div>`).join("")}<h4>ลีกอื่นๆ วันนี้</h4><input id="sq" placeholder="กรอง..." value="${k}">${getOthers().filter(n=>n.toLowerCase().includes(k)).map(n=>`<div class="si" data-q="${n.replace(/"/g,"&quot;")}">${n}</div>`).join("")}`;
+  if(q!=null){const i=document.getElementById("sq");i.focus();i.setSelectionRange(k.length,k.length)}};
+ draw();window.drawSide=()=>draw();window.sideSig=()=>getOthers().join("|");
+ side.addEventListener("input",e=>{if(e.target.id=="sq")draw(e.target.value)});
+ document.addEventListener("click",e=>{const t=e.target.closest("[data-q]");if(t)doSearch(t.dataset.q)})})();
+</script>
+<script>// ===== ระบบทีมโปรด: เก็บในเบราว์เซอร์ (localStorage) ไม่ซิงก์ข้ามเครื่อง =====
+(function(){
+ const K="fh_fav";
+ try{window.FAV=new Set(JSON.parse(localStorage.getItem(K)||"[]"))}catch(e){window.FAV=new Set()}
+ const save=()=>{try{localStorage.setItem(K,JSON.stringify([...FAV]))}catch(e){}};
+ const esc=s=>s.replace(/"/g,"&quot;");
+ window.favSideHtml=()=>`<h4>⭐ ทีมโปรด</h4>`+(FAV.size?[...FAV].map(n=>`<div class="fav-item"><span class="si" data-q="${esc(n)}">${n}</span><b class="x" data-unfav="${esc(n)}" title="เอาออก">×</b></div>`).join(""):`<div class="si" style="color:var(--muted);cursor:default">ยังไม่มี กดดาว ☆ ที่แถวแมตช์</div>`);
+ const box=document.createElement("div");box.id="favBox";$("#todayFilters").before(box);
+ const pop=document.createElement("div");pop.id="favpop";document.body.appendChild(pop);
+ function renderFav(){
+  if(!FAV.size){box.innerHTML=`<div class="empty">ยังไม่มีทีมโปรด — กดดาว ☆ ที่หน้าแถวแมตช์เพื่อเลือกทีม</div>`;return}
+  const A=MV().filter(m=>FAV.has(m.h)||FAV.has(m.a)),up=A.filter(m=>st(m)!="FT").sort((a,b)=>a.k-b.k),dn=A.filter(m=>st(m)=="FT").sort((a,b)=>b.k-a.k),list=up.concat(dn).slice(0,8);
+  box.innerHTML=`<h3 class="group-h">⭐ ทีมโปรดของฉัน</h3><div class="fixture-list">${list.map(row).join("")||'<div class="empty">ยังไม่มีแมตช์ของทีมโปรดในข้อมูล</div>'}</div>`}
+ function refresh(){renderFav();renderToday();renderHome();window.drawSide&&drawSide()}
+ const toggle=n=>{FAV.has(n)?FAV.delete(n):FAV.add(n);save();refresh()};
+ document.addEventListener("click",e=>{
+  const x=e.target.closest("[data-unfav]");if(x){toggle(x.dataset.unfav);return}
+  const t=e.target.closest("[data-ft]");if(t){toggle(t.dataset.ft);pop.style.display="none";return}
+  const s=e.target.closest(".fixture .star");
+  if(s){e.stopPropagation();const m=M[+s.closest("[data-m]").dataset.m],r=s.getBoundingClientRect();
+   pop.innerHTML=[m.h,m.a].map(n=>`<button data-ft="${esc(n)}">${FAV.has(n)?"★ เอาออก":"☆ เพิ่ม"} ${n}</button>`).join("");
+   pop.style.cssText=`display:block;top:${r.bottom+scrollY+4}px;left:${Math.max(8,Math.min(r.left+scrollX,innerWidth-230))}px`;return}
+  if(!e.target.closest("#favpop"))pop.style.display="none"},true);
+ window.favRender=renderFav;refresh();setInterval(renderFav,30000);
+})();
+</script>
+<script>
+// ===== เชื่อม backend: ดึงข้อมูลสดอัตโนมัติ =====
+// หน้านี้ดึง /api/feed ทุก 15 วินาที และ /api/leagues ทุก 10 นาที จาก backend ของเราเอง (ไม่ได้ยิง API ผู้ให้บริการตรง)
+// ถ้า backend อยู่คนละโดเมนกับหน้าเว็บ ให้ตั้ง window.FH_BASE="https://api.example.com" ก่อนสคริปต์นี้
+(function(){
+ const BASE=(window.FH_BASE||"").replace(/\/$/,"");
+ API.url=BASE+"/api/match/{id}";
+ const LN={};L.forEach(l=>LN[l.id]=l);
+ const EXT=new Map();                         // fixture id -> match object (ใช้ร่วมกันระหว่าง feed และ league)
+ const $id=i=>document.getElementById(i);
+ const active=i=>!!document.querySelector("#"+i+".active");
+ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
+ const clean=x=>String(x).replace(/[,;]/g," ");
+
+ // ---- แปลงข้อมูลจาก backend -> รูปแบบ match ที่หน้าเว็บเดิมใช้
+ const label=it=>{const l=it.lid&&LN[it.lid];if(l)return l.f+" "+l.n;return it.flag+" "+(it.country&&it.country!="World"?it.country+" · ":"")+it.league};
+ function upd(m,it){
+  m.lg=label(it);m.h=it.home;m.a=it.away;m.k=it.k;m.lid=it.lid||undefined;m.rd=it.round||undefined;
+  m.z=it.status;m.s=it.status=="FT"?"FT":it.status=="UP"?"UP":"EST";
+  m.x=it.x;m.y=it.y;m.min=it.min;m.extra=it.extra;m.phase=it.phase;
+  m.p=it.p&&it.p.length==3?it.p:undefined;m.stale=false}
+ function ensure(it){let m=EXT.get(it.id);
+  if(!m){m=add({lg:"",h:it.home,a:it.away,k:it.k,s:"EST",ext:it.id,d:{src:"API-Football",ev:[]}});EXT.set(it.id,m)}
+  upd(m,it);return m}
+
+ // ---- รายละเอียดแมตช์ (เหตุการณ์/สถิติ/ผู้เล่น)
+ AD.fh=j=>({z:j.status,x:j.x,y:j.y,min:j.min,extra:j.extra,phase:j.phase,d:{src:"API-Football",
+  ev:(j.events||[]).map(e=>{const x={};if(e.p)x.p=e.p;if(e.as)x.as=e.as;if(e.i)x.i=e.i;if(e.o)x.o=e.o;if(e.n)x.n=e.n;if(e.a)x.a=e.a;
+   return[e.min,e.type,e.side,e.sx==null?null:e.sx,e.sy==null?null:e.sy,x]}),
+  st:j.stats||undefined,lu:j.lineups||undefined}});
+ window.loadDetail=async function(m,redraw){
+  if(m.ext==null)return;
+  const r=await fetch(API.url.replace("{id}",m.ext),{cache:"no-store"});if(!r.ok)return;
+  const a=AD.fh(await r.json()),oldN=m.d&&m.d.ev?m.d.ev.length:0,oldZ=st(m);
+  m.z=a.z;m.s=a.z=="FT"?"FT":a.z=="UP"?"UP":"EST";m.x=a.x;m.y=a.y;m.min=a.min;m.extra=a.extra;m.phase=a.phase;m.d=a.d;
+  if(redraw&&cur===m)draw(m,(a.d.ev.length!==oldN||st(m)!==oldZ)?1:0)};
+
+ // ---- แจ้งเตือนในหน้าเว็บ (เฉพาะทีมโปรดที่กดดาวไว้) เมื่อสกอร์เปลี่ยน
+ const css=document.createElement("style");
+ css.textContent="#toasts{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;z-index:50;max-width:min(360px,calc(100vw - 28px))}.toast{background:var(--panel);border:1px solid var(--accent);border-radius:12px;padding:10px 14px;box-shadow:0 10px 30px -10px rgba(0,0,0,.5);font-size:14px;animation:up .25s ease both}.toast small{display:block;color:var(--muted)}";
+ document.head.appendChild(css);
+ const tbox=document.createElement("div");tbox.id="toasts";tbox.setAttribute("aria-live","polite");document.body.appendChild(tbox);
+ function toast(t,sub){const d=document.createElement("div");d.className="toast";d.innerHTML=t+"<small>"+(sub||"")+"</small>";tbox.appendChild(d);setTimeout(()=>d.remove(),9000)}
+ const LAST={};
+ function watch(m){const key=m.x+"-"+m.y,pv=LAST[m.ext];LAST[m.ext]=key;
+  if(pv==null||pv==key||!window.FAV||st(m)!="LIVE")return;
+  if(FAV.has(m.h)||FAV.has(m.a))toast("⚽ "+esc(m.h)+" "+m.x+" - "+m.y+" "+esc(m.a),esc(m.lg)+(m.min!=null?" · "+m.min+"'":""))}
+
+ // ---- ข้อความสถานะ
+ const set=(i,x)=>{const n=$id(i);if(n)n.textContent=x};
+ function status(bad){
+  const t=FEED.t?new Date(FEED.t).toLocaleTimeString("th-TH",{hour12:false}):"–";
+  set("feedStat",bad?"🔴 เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ · แสดงข้อมูลล่าสุดเมื่อ "+t:"🟢 ข้อมูลสดอัตโนมัติ · อัปเดตล่าสุด "+t);
+  if(bad||!FEED.ok)return;
+  set("heroLbl","กำลังเตะอยู่ตอนนี้");set("liveH2","กำลังเตะตอนนี้");set("liveP","สกอร์สดอัปเดตอัตโนมัติ");set("asOf","ข้อมูลสดอัตโนมัติ");
+  if(FEED.win)set("todayDate",new Date(FEED.win.from).toLocaleDateString("th-TH",{timeZone:"Asia/Bangkok",weekday:"long",day:"numeric",month:"long",year:"numeric"})+" (เวลาไทย) รวมคู่ที่เตะข้ามคืนถึงเช้า")}
+
+ // ---- ดึงโปรแกรม/สกอร์สดทั่วโลก
+ let first=true,sig="",lastSide="";
+ async function pullFeed(){
+  try{
+   const r=await fetch(BASE+"/api/feed",{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);
+   const j=await r.json();if(!j||!j.ok)throw new Error("bad feed");
+   if(first){M.forEach(m=>{if(m.s=="EST"&&m.ext==null)m.stale=true});first=false}   // ของ static เดิม (TODAY) ใช้ไม่ได้อีกแล้ว
+   const list=j.matches.map(it=>{const m=ensure(it);watch(m);return m}).sort((a,b)=>a.k-b.k);
+   TD.length=0;TD.push(...list);
+   FEED.ok=true;FEED.t=Date.now();FEED.win=j.window;status();
+   const ns=list.map(m=>m.ext+":"+st(m)+":"+m.x+":"+m.y+":"+m.min+":"+m.phase).join("|");
+   if(ns!==sig){sig=ns;renderHome();renderToday();if(window.favRender)favRender();
+    if(window.sideSig&&sideSig()!==lastSide){lastSide=sideSig();drawSide()}
+    if(cur&&cur.ext!=null&&active("matchDetail"))loadDetail(cur,1).catch(()=>{})}
+  }catch(e){status(true)}}
+
+ // ---- ตารางคะแนน / ผลล่าสุด / โปรแกรมถัดไป ของลีกที่ติดตาม
+ async function pullLeagues(){
+  try{
+   const r=await fetch(BASE+"/api/leagues",{cache:"no-store"});if(!r.ok)return;
+   const j=await r.json();if(!j||!j.ok)return;let ch=false;
+   for(const[id,v]of Object.entries(j.leagues||{})){const l=LN[id];if(!l)continue;
+    if(v.standings&&v.standings.length){l.s=v.standings.map(x=>[clean(x.team),x.w,x.d,x.l,x.pts].join(",")).join(";");ch=true}
+    if(v.matches&&v.matches.length){(l.m||[]).forEach(m=>{if(m.ext==null)m.stale=true});l.m=v.matches.map(ensure);ch=true}}
+   if(ch){Object.keys(CACHE).forEach(k=>delete CACHE[k]);
+    renderHome();renderArts();renderLeagues();renderToday();if(window.favRender)favRender();
+    if(active("leagueDetail")&&curL)drawLeague();
+    if(active("insights"))renderInsights()}
+  }catch(e){}}
+
+ pullFeed();pullLeagues();
+ setInterval(()=>{if(!document.hidden)pullFeed()},15000);
+ setInterval(()=>{if(!document.hidden)pullLeagues()},600000);
+ document.addEventListener("visibilitychange",()=>{if(!document.hidden)pullFeed()});
+})();
+
+</script>
+</body>
+</html>
